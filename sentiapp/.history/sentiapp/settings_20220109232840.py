@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'crispy_forms',
 
  
-    'django_celery_beat',
-    'django_celery_results',
+    'django-celery-results'
+    'django-celery-beat'
 
 ]
 
@@ -152,8 +152,7 @@ CELERY_ACCEPT_CONTENT  =  ['application/json']
 CELERY_RESULT_SERIALIZER =  'json'
 CELERY_TASK_SERIALIZER =  'json'
 CELERY_TIMEZONE =  'Europe/London'
-CELERY_RESULT_BACKEND = "django-db"
-
+CELERY_RESULT_BACKEND  = 'django-db'
 
 #celery beat setting
 

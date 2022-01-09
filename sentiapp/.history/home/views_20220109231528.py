@@ -32,10 +32,6 @@ import statistics
 from statistics import mode
 
 from collections import Counter
-
-
-from .tasks import test_func
-
 # import twitter_credentials
 nltk.download('vader_lexicon')
 
@@ -343,5 +339,4 @@ def createMonthlyRecord(ticker):
 
 
 def test(request):
-    test_func.delay()
     return HttpResponse("Done")
