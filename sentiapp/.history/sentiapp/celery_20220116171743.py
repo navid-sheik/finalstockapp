@@ -2,7 +2,7 @@
 from __future__ import  absolute_import, unicode_literals
 from datetime import timezone
 import os
-from celery.schedules import crontab
+
 from celery import Celery
 from django.conf import settings
 
@@ -24,11 +24,6 @@ app.conf.beat_schedule = {
     'every-60-seconds':{
         'task': 'miner.tasks.test_func2',
         'schedule' : 600,
-    },
-    'every-hour-create-record':{
-        'task': 'miner.tasks.createHourlyRecord',
-        'schedule' : crontab(minute='0', hour='*/1'),
-        'args': ('TSL',),
     }
     
 }

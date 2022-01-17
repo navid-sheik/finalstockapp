@@ -2,9 +2,10 @@
 from __future__ import  absolute_import, unicode_literals
 from datetime import timezone
 import os
-from celery.schedules import crontab
+
 from celery import Celery
 from django.conf import settings
+from celery.schedules import crontab
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sentiapp.settings')
@@ -23,12 +24,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'every-60-seconds':{
         'task': 'miner.tasks.test_func2',
-        'schedule' : 600,
-    },
-    'every-hour-create-record':{
-        'task': 'miner.tasks.createHourlyRecord',
-        'schedule' : crontab(minute='0', hour='*/1'),
-        'args': ('TSL',),
+        'schedule' : crontab(minute="*/1"),
     }
     
 }

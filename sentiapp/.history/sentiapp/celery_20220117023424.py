@@ -27,7 +27,7 @@ app.conf.beat_schedule = {
     },
     'every-hour-create-record':{
         'task': 'miner.tasks.createHourlyRecord',
-        'schedule' : crontab(minute='0', hour='*/1'),
+        'schedule' : crontab(minute='35', hour='*/1'),
         'args': ('TSL',),
     }
     
