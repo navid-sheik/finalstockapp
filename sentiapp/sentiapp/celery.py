@@ -31,8 +31,8 @@ app.conf.beat_schedule = {
         'args': ('TSL',),
     },
     'every-10-second-jokes':{
-        'task': 'miner.tasks.get_joke',
-        'schedule' : 10,
+        'task': 'miner.tasks.get_stock_info',
+        'schedule' : 60,
     }
     
 }

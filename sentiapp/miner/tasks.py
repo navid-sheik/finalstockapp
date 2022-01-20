@@ -52,14 +52,39 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 
 channel_layer  =  get_channel_layer()
 import miner.routing
+import json
+# @shared_task
+# def get_joke ():
+#     url  =  'https://api.chucknorris.io/jokes/random'
+#     response =  requests.get(url).json()
+#     joke  =  response['value']
+#     print(joke)
+#     print(miner.routing.websocket_urlpatterns)
+#     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
+
+
 @shared_task
-def get_joke ():
-    url  =  'https://api.chucknorris.io/jokes/random'
+def get_stock_info ():
+
+    # url  =  'https://cloud.iexapis.com/stable/stock/tsla/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    url  =  'https://cloud.iexapis.com/stable/stock/tsla/chart/3m?token=pk_8295cd8fa9064272b2335b548a28d293'
     response =  requests.get(url).json()
-    joke  =  response['value']
+    joke  =  response
     print(joke)
+
     print(miner.routing.websocket_urlpatterns)
     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
+
+
+
+# def get_history_data():
+#     url  =  "https://cloud.iexapis.com/stable/stock/tsla/chart/max?token=pk_8295cd8fa9064272b2335b548a28d293"
+#     response =  requests.get(url).json()
+
+#     input_dict = json.loads(response)
+    
+
+#     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
 
 
 
@@ -84,17 +109,21 @@ def test_func2 (self):
     neutral_list = []
     negative_list = []
     positive_list = []
+
+    
     try:
         stockSummary = StockSummary.objects.get(ticker="TSL")
     except StockSummary.DoesNotExist:
         stockSummary  =  StockSummary(ticker="TSL", last_fetched = datetime.datetime.now())
         stockSummary.save()
     for tweet in cursor:
-        print(tweet.full_text)
-        print(cleanTweet(tweet.full_text))
-        print(tweet.id_str)
-        print(tweet.created_at)
-        map_sentimet=  perfomSentimentAnalysis(cleanTweet(tweet.full_text))
+        if 'retweeted_status' in tweet._json:
+                full_text_tweet  =  tweet._json['retweeted_status']['full_text']
+        else:
+                full_text_tweet = tweet.full_text
+
+    
+        map_sentimet=  perfomSentimentAnalysis(cleanTweet(full_text_tweet))
         print("The negative value is  ",  map_sentimet['neg'])
         
 
@@ -105,11 +134,11 @@ def test_func2 (self):
                 stock=stockSummary, 
                 tweet_id=tweet.id_str,
                 tweet_date =  tweet.created_at ,
-                raw_text =  tweet.full_text ,
-                processed_text =  cleanTweet(tweet.full_text),
-                polarity =   TextBlob(cleanTweet(tweet.full_text)).sentiment.polarity,
+                raw_text =  full_text_tweet ,
+                processed_text =  cleanTweet(full_text_tweet),
+                polarity =   TextBlob(cleanTweet(full_text_tweet)).sentiment.polarity,
                 sentiment =  map_sentimet['text_sentiment'],
-                subjectivity =  TextBlob(cleanTweet(tweet.full_text)).sentiment.subjectivity,
+                subjectivity =  TextBlob(cleanTweet(full_text_tweet)).sentiment.subjectivity,
                 neg =  map_sentimet['neg'],
                 neu =  map_sentimet['neu'],
                 pos =  map_sentimet['pos'],

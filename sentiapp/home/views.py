@@ -75,26 +75,39 @@ def index(request):
         stockSummary  =  StockSummary(ticker="TSL", last_fetched = datetime.datetime.now())
         stockSummary.save()
     for tweet in cursor:
-        print(tweet.full_text)
-        print(cleanTweet(tweet.full_text))
-        print(tweet.id_str)
-        print(tweet.created_at)
-        map_sentimet=  perfomSentimentAnalysis(cleanTweet(tweet.full_text))
-        print("The negative value is  ",  map_sentimet['neg'])
+        # if 'retweeted_status' in tweet._json:
+        #     print("THIS IS A RETWEEN")
+        #     print(tweet._json['retweeted_status']['full_text'])
+        # else:
+        #     print(tweet.full_text)
+        # print(tweet.full_text)
+        # print(cleanTweet(tweet.full_text))
+        # print(tweet.id_str)
+        # print(tweet.created_at)
+        if 'retweeted_status' in tweet._json:
+            map_sentimet=  perfomSentimentAnalysis(cleanTweet(tweet._json['retweeted_status']['full_text']))
+        else:
+            map_sentimet=  perfomSentimentAnalysis(cleanTweet(tweet.full_text))
+        # print("The negative value is  ",  map_sentimet['neg'])
         
+        if 'retweeted_status' in tweet._json:
+                tweetToInput  =  tweet._json['retweeted_status']['full_text']
+        else:
+                tweetToInput = tweet.full_text
 
         try:
             tweet_record = TweetRecord.objects.get(tweet_id=tweet.id_str)
         except TweetRecord.DoesNotExist:
+           
             tweet_record = TweetRecord(
                 stock=stockSummary, 
                 tweet_id=tweet.id_str,
                 tweet_date =  tweet.created_at ,
-                raw_text =  tweet.full_text ,
-                processed_text =  cleanTweet(tweet.full_text),
-                polarity =   TextBlob(cleanTweet(tweet.full_text)).sentiment.polarity,
+                raw_text =  tweetToInput,
+                processed_text =  cleanTweet(tweetToInput),
+                polarity =   TextBlob(cleanTweet(tweetToInput)).sentiment.polarity,
                 sentiment =  map_sentimet['text_sentiment'],
-                subjectivity =  TextBlob(cleanTweet(tweet.full_text)).sentiment.subjectivity,
+                subjectivity =  TextBlob(cleanTweet(tweetToInput)).sentiment.subjectivity,
                 neg =  map_sentimet['neg'],
                 neu =  map_sentimet['neu'],
                 pos =  map_sentimet['pos'],
@@ -106,9 +119,9 @@ def index(request):
        
      
 
-        tweet_list.append(tweet.full_text)
-        analysis = TextBlob(tweet.full_text)
-        score = SentimentIntensityAnalyzer().polarity_scores(tweet.full_text)
+        tweet_list.append(tweetToInput)
+        analysis = TextBlob(tweetToInput)
+        score = SentimentIntensityAnalyzer().polarity_scores(tweetToInput)
         neg = score['neg']
         neu = score['neu']
         pos = score['pos']
@@ -116,14 +129,14 @@ def index(request):
         polarity += analysis.sentiment.polarity
         
         if neg > pos:
-            negative_list.append(tweet.full_text)
+            negative_list.append(tweetToInput)
             negative += 1
         elif pos > neg:
-            positive_list.append(tweet.full_text)
+            positive_list.append(tweetToInput)
             positive += 1
         
         elif pos == neg:
-            neutral_list.append(tweet.full_text)
+            neutral_list.append(tweetToInput)
             neutral += 1
 
     # positive = percentage(positive, number_of_tweets)
@@ -136,9 +149,9 @@ def index(request):
 
 
     #Number of Tweets (Total, Positive, Negative, Neutral)
-    print("Before " +  str(len(tweet_list)))
+    # print("Before " +  str(len(tweet_list)))
     tweet_list = list(dict.fromkeys(tweet_list))
-    print("AFter " +   str(len(tweet_list)))
+    # print("AFter " +   str(len(tweet_list)))
 
 
     
@@ -146,12 +159,12 @@ def index(request):
     neutral_list = pd.DataFrame(neutral_list)
     negative_list = pd.DataFrame(negative_list)
     positive_list = pd.DataFrame(positive_list)
-    print('total number: ',len(tweet_list))
-    print('positive number: ',len(positive_list))
-    print('negative number: ', len(negative_list))
-    print('neutral number: ',len(neutral_list))
+    # print('total number: ',len(tweet_list))
+    # print('positive number: ',len(positive_list))
+    # print('negative number: ', len(negative_list))
+    # print('neutral number: ',len(neutral_list))
 
-    print(tweet_list)
+    # print(tweet_list)
 
     # tweet_list.drop_duplicates(inplace = True)
 
@@ -167,7 +180,7 @@ def index(request):
     rt = lambda x: re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",x)
     tw_list["text"] = tw_list.text.map(remove_rt).map(rt)
     tw_list["text"] = tw_list.text.str.lower()
-    print(tw_list.head(100))
+    # print(tw_list.head(100))
 
 
     # tw_list[['polarity', 'subjectivity']] = tw_list['text'].apply(lambda Text: pd.Series(TextBlob(Text).sentiment))
