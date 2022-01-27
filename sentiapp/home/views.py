@@ -77,6 +77,7 @@ def index(request):
         stockSummary  =  StockSummary(ticker="TSL", last_fetched = datetime.datetime.now())
         stockSummary.save()
     for tweet in cursor:
+        # print(tweet)
         # if 'retweeted_status' in tweet._json:
         #     print("THIS IS A RETWEEN")
         #     print(tweet._json['retweeted_status']['full_text'])
