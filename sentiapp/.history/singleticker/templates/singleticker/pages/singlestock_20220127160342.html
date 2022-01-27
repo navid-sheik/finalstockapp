@@ -1,0 +1,213 @@
+{% extends "singleticker/base.html" %}
+
+
+{% block content %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<div id="app" class="container">
+    <div class="row">
+        <div id="ticke-title">
+            <h1> $TSL </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-price">
+                <div>
+                    <h1> [[currentPrice]] </h1>
+                </div>
+                <div>
+                    <p> + 2.60% ($74.72) </p>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-overview">
+                <div class="row">
+
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    <!-- 
+    {% autoescape off %}
+    {{ tweets }}
+    {% endautoescape %} -->
+
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+    //   const labelsx = [
+    //     'January',
+    //     'February',
+    //     'March',
+    //     'April',
+    //     'May',
+    //     'June',
+    //   ];
+
+    //   const data = {
+    //     labels: labelsx,
+    //     datasets: [{
+    //       label: 'My First dataset',
+    //       backgroundColor: 'rgb(255, 99, 132)',
+    //       borderColor: 'rgb(255, 99, 132)',
+    //       data: [0, 10, 5, 2, 20, 30, 45],
+    //     }]
+    //   };
+
+    //   const config = {
+    //                 type: 'line',
+    //                 data: data,
+    //                 options: {
+    //                     xAxes: [{
+    //                     type: 'time',
+    //                     time: {
+    //                         parser: 'YYYY-MM-DD HH:mm:ss',
+    //                         unit: 'minute',
+    //                         displayFormats: {
+    //                             'minute': 'YYYY-MM-DD HH:mm:ss',
+    //                             'hour': 'YYYY-MM-DD HH:mm:ss'
+    //                         }
+    //                     },
+    //                     ticks: {
+    //                         source: 'data'
+    //                     }
+    //                 }]        }
+    //              };
+
+    //   const myChart = new Chart(
+    //     document.getElementById('myChart'),
+    //     config
+    //   );
+
+
+
+    stockSocket.onclose = function (e) {
+        console.log(e.error)
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                currentPrice: 0,
+
+
+            }
+        },
+
+        async created() {
+
+            var stockPath = window.location.pathname.split('/');
+            var stockSingle = stockPath[2]
+
+            const stockSocket = new WebSocket(
+                'ws://'
+                + window.location.host
+                + '/ws/singlestock/'
+                + stockSingle + '/'
+
+            );
+            console.log(stockSocket)
+            stockSocket.onmessage = function (e) {
+                if (typeof e !== 'undefined') {
+                    var response = JSON.parse(e.data);
+                    console.log(response.latestPrice);
+                    this.currentPrice = response.latestPrice
+
+
+                };
+
+
+
+
+            };
+
+
+            //make a get request
+            var pathArray = window.location.pathname.split('/');
+            console.log(pathArray[2])
+            var urlWithPath = "{%url 'singleticker:get_current_quote' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            let response = await fetch(urlWithPath);
+            if (response.ok) {
+                let data = await response.json();
+                console.log(data.stock_quote)
+                this.currentPrice = data.stock_quote.latestPrice
+            }
+            else {
+                alert("failed to load the list of hobbies");
+            }
+        },
+        methods: {
+            async createNewHobby() { }
+        }
+    })
+    myApp.mount('#app')
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

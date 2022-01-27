@@ -11,16 +11,21 @@ import django
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from miner.routing  import websocket_urlpatterns
+import miner
 
+from singleticker.routing  import websocket_urlpatterns_stock
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     'websocket':  AuthMiddlewareStack(
         URLRouter(
-            websocket_urlpatterns
-        )
+            # websocket_urlpatterns,
+            websocket_urlpatterns_stock,
+           
+        ),
+       
+
     ),
     # Just HTTP for now. (We can add other protocols later.)
 })
