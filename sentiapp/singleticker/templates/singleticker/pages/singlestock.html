@@ -77,6 +77,52 @@
 
     <div class="row">
         <div id="left-graph-ticker-container" class="col-8">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
+
+                </div>
+
+
+
+            </div>
 
             <canvas id="myChart"></canvas>
 
@@ -173,6 +219,10 @@
             return {
                 currentPrice: 0,
                 stockSocket: null,
+                labelsx: null,
+                data: null,
+                config: null,
+                myChart: null,
 
 
             }
@@ -231,24 +281,25 @@
 
 
 
-            const labelsx = [
+            this.labelsx = [
 
             ];
 
-            const data = {
-                labels: labelsx,
+            this.data = {
+                labels: this.labelsx,
                 datasets: [{
-                    label: 'My First dataset',
+                    label: 'Last 24 hours',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
                     data: [],
                 }]
             };
 
-            const config = {
+            this.config = {
                 type: 'line',
-                data: data,
+                data: this.data,
                 options: {
+                    responsive: true,
                     xAxes: [{
                         type: 'time',
                         time: {
@@ -268,10 +319,11 @@
 
 
 
-            const myChart = new Chart(
+            this.myChart = new Chart(
                 document.getElementById('myChart'),
-                config
+                this.config
             );
+            var pathArray = window.location.pathname.split('/');
 
             var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
             histogramPath = histogramPath.replace("50000000000000", "5d")
@@ -288,20 +340,268 @@
                 console.log(data.stock_quote)
 
 
-                var mybarChart = document.getElementById('myChart');
+                // var mybarChart = document.getElementById('myChart');
 
-                console.log(mybarChart);
+                // console.log(mybarChart);
                 console.log(dates);
 
-                myChart.data.labels = dates;
-                myChart.data.datasets[0].data = prices;
-                myChart.update();
+                this.myChart.data.labels = dates;
+                this.myChart.data.datasets[0].data = prices;
+                this.myChart.update();
             } else {
                 alert("failed to load the list of hobbies");
             }
         },
         methods: {
-            async createNewHobby() {}
+
+            async stockHistoryDynamics() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "dynamic")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.data.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.data.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory5Days() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5d")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Month() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistory3Months() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "3m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Year() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+            async stockHistory5Years() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistoryMax() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "max")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+
+
+
         }
     })
     myApp.mount('#app');
