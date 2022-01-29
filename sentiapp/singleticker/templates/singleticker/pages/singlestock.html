@@ -128,18 +128,17 @@
 
         </div>
         <div id="right-tweet-container" class="col-4">
-            <div class="list-group">
+            <div class="list-group" v-if="tweet !== null">
                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
                     <div class="d-flex w-100 " style="margin-bottom : 10px;">
-                        <img src="https://pbs.twimg.com/media/FKG-GKkXMAEYoyI?format=jpg&name=small" width="50" height="50" style="margin-right : 10px;">
-                        <h5 class="mb-1">Username </h5>
+                        <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
+                        <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
 
                     </div>
                     <div style="word-wrap: break-word;">
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.scnjkcwmklwncljkncjwncjsncjwncjbncjwnjncjw c iuwbcuiwbc weucnwucbwk coiiochicjiwencow ioniewnciwk ocwicn imiowncwncicnminciwcewicniwcowcjwcmwpcmwoc,wocmcoiwniocnwkcwkocw
-                            owciowkncowcniewc
+                        <p class="mb-1">[[tweet.full_text]]
                         </p>
-                        <small>Donec id elit non mi porta.</small>
+                        <small>[[tweet.created_at]]</small>
                     </div>
                 </a>
 
@@ -205,7 +204,7 @@
 
         </div>
         <div id="right-tweet-container" class="col-4">
-            <div class="list-group">
+            <div class="list-group" v-if="tweet !== null">
                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
                     <div class="d-flex w-100 " style="margin-bottom : 10px;">
                         <img src="https://pbs.twimg.com/media/FKG-GKkXMAEYoyI?format=jpg&name=small" width="50" height="50" style="margin-right : 10px;">
@@ -300,6 +299,7 @@
                 data: null,
                 config: null,
                 myChart: null,
+                tweet: null,
 
 
             }
@@ -441,7 +441,11 @@
             if (responseTweet.ok) {
                 let data = await responseTweet.json();
                 console.log("TWEET");
-                console.log(data.tweet);
+                data = JSON.parse(data.tweet);
+                this.tweet = data;
+                console.log(data)
+
+
 
             } else {
                 console.log(response.error)
