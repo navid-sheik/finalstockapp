@@ -1,6 +1,5 @@
 
 
-import json
 from django.http import JsonResponse
 import requests
 
@@ -38,7 +37,7 @@ def fetchStockDataHistory(request, ticker_id, timestamp):
     print(response)
     return JsonResponse({'stock_quote': response})
 
-def getHotTweet(request):
+def getTweets(request):
 
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -47,10 +46,6 @@ def getHotTweet(request):
     number_of_tweets = 100
 
     keyword  = 'Tesla #tesla'
-    cursor  =  tweepy.Cursor(api.search_tweets, q= keyword, tweet_mode="extended", result_type='popular', lang="en").items(1)
+    cursor  =  tweepy.Cursor(api.search_tweets, q= keyword, tweet_mode="extended", lang="en").items(number_of_tweets)
 
-    searched_tweets = [status._json for status  in cursor]
-    json_string  =  [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    print(json_string)
-    return JsonResponse({'tweet': json_string})
+    print(cursor)

@@ -53,4 +53,4 @@ def getHotTweet(request):
     json_string  =  [json.dumps(json_obj) for json_obj in searched_tweets]
     print("The json string")
     print(json_string)
-    return JsonResponse({'tweet': json_string})
+    return json_string

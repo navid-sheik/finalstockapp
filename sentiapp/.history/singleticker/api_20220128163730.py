@@ -1,6 +1,5 @@
 
 
-import json
 from django.http import JsonResponse
 import requests
 
@@ -49,8 +48,5 @@ def getHotTweet(request):
     keyword  = 'Tesla #tesla'
     cursor  =  tweepy.Cursor(api.search_tweets, q= keyword, tweet_mode="extended", result_type='popular', lang="en").items(1)
 
-    searched_tweets = [status._json for status  in cursor]
-    json_string  =  [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    print(json_string)
-    return JsonResponse({'tweet': json_string})
+    for tweet in cursor:
+       return tweet._json["full_text"]
