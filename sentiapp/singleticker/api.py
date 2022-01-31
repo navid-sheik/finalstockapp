@@ -69,6 +69,7 @@ def getSentiment24Hours(request, ticker_id):
     print("We have found this record  ",  records.count)
 
     fetched_date = datetime.datetime.now()
+    list_date = records.values_list('tweet_date', flat=True)
     list_stemmed = records.values_list('overall_stemmed_text', flat=True)
     wordcloud = stemmed_text_compress(list_stemmed)
 
@@ -81,8 +82,7 @@ def getSentiment24Hours(request, ticker_id):
     list_neutraul_count = records.values_list('neutraul_count', flat=True)
     neutraul_count_24_hours = sum(list_neutraul_count)
 
-    total_tweets_count = negative_count_24_hours + \
-        positive_count_24_hours + neutraul_count_24_hours
+    total_tweets_count = negative_count_24_hours + positive_count_24_hours + neutraul_count_24_hours
 
     list_negative = records.values_list('overall_neg', flat=True)
     mean_negative_24_hours = mean(list_negative)
@@ -124,12 +124,13 @@ def getSentiment24Hours(request, ticker_id):
 
         'values_polarity':  list(list_polarity),
         'values_subjectivity':  list(list_subjecivity),
+        'dates' :  [dt.time() for dt in list_date]
 
     })
 
 
 def mean(list_sentiment):
-    return statistics.mean(list_sentiment)
+    return round(statistics.mean(list_sentiment) , 2)
 
 
 # private method

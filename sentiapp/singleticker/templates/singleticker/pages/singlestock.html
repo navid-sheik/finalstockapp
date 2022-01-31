@@ -242,14 +242,9 @@
         </div>
 
         <div class="col">
-            <div id="demo">
+            <h2> Word CLoud </h2>
+            <div id="myChart"></div>
 
-                <span data-weight="91"> Tag 1 </span>
-                <span data-weight="21"> Tag 2 </span>
-                <span data-weight="41"> Tag 3 </span>
-                <span data-weight="13"> Tag 4 </span>
-                <span data-weight="78"> Tag 5 </span>
-            </div>
 
         </div>
 
@@ -271,86 +266,6 @@
 
 {% endblock %} {% block scripts %}
 <script>
-    anychart.onDocumentReady(function() {
-        var data = [{
-            "x": "Mandarin chinese",
-            "value": 1090000000,
-            category: "Sino-Tibetan"
-        }, {
-            "x": "English",
-            "value": 983000000,
-            category: "Indo-European"
-        }, {
-            "x": "Hindustani",
-            "value": 544000000,
-            category: "Indo-European"
-        }, {
-            "x": "Spanish",
-            "value": 527000000,
-            category: "Indo-European"
-        }, {
-            "x": "Arabic",
-            "value": 422000000,
-            category: "Afro-Asiatic"
-        }, {
-            "x": "Malay",
-            "value": 281000000,
-            category: "Austronesian"
-        }, {
-            "x": "Russian",
-            "value": 267000000,
-            category: "Indo-European"
-        }, {
-            "x": "Bengali",
-            "value": 261000000,
-            category: "Indo-European"
-        }, {
-            "x": "Portuguese",
-            "value": 229000000,
-            category: "Indo-European"
-        }, {
-            "x": "French",
-            "value": 229000000,
-            category: "Indo-European"
-        }, {
-            "x": "Hausa",
-            "value": 150000000,
-            category: "Afro-Asiatic"
-        }, {
-            "x": "Punjabi",
-            "value": 148000000,
-            category: "Indo-European"
-        }, {
-            "x": "Japanese",
-            "value": 129000000,
-            category: "Japonic"
-        }, {
-            "x": "German",
-            "value": 129000000,
-            category: "Indo-European"
-        }, {
-            "x": "Persian",
-            "value": 121000000,
-            category: "Indo-European"
-        }];
-
-        // create a tag (word) cloud chart
-        var chart = anychart.tagCloud(data);
-
-        // set a chart title
-        chart.title('15 most spoken languages')
-            // set an array of angles at which the words will be laid out
-        chart.angles([0])
-            // enable a color range
-        chart.colorRange(true);
-        // set the color range length
-        chart.colorRange().length('80%');
-
-        // display the word cloud chart
-        chart.container("container");
-        chart.draw();
-    });
-
     // List of words
     // List of words
 
@@ -608,11 +523,35 @@
             this.dataSentiment = {
                 labels: this.labelSentiment,
                 datasets: [{
-                    label: 'Last 24 hours',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [],
-                }]
+                        label: 'Compound',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        fill: false,
+                        data: [],
+                    }, {
+                        label: 'Positve',
+                        backgroundColor: 'rgb(120, 92, 22)',
+                        borderColor: 'rgb(120, 92, 22)',
+                        fill: false,
+                        data: [],
+                    }, {
+                        label: 'Negative',
+                        backgroundColor: 'rgb(189, 185, 185)',
+                        borderColor: 'rgb(189, 185, 185)',
+                        fill: false,
+                        data: [],
+                    },
+
+                    {
+                        label: 'Neutral',
+                        backgroundColor: 'rgb(68, 201, 126)',
+                        borderColor: 'rgb(68, 201, 126)',
+                        fill: false,
+                        data: [],
+                    },
+
+
+                ]
             };
 
             this.configSentiment = {
@@ -714,6 +653,12 @@
 
 
 
+
+
+
+
+
+
             //GET SENTIMENT DATA
 
 
@@ -733,6 +678,71 @@
                 this.pieChart.data.datasets[0].data = [data.positive_count, data.negative_count, data.neutral_count];
 
                 this.pieChart.update();
+                this.sentimentChart.data.labels = data.dates;
+                this.sentimentChart.data.datasets[0].data = data.values_compound;
+                this.sentimentChart.data.datasets[1].data = data.values_positives;
+
+                this.sentimentChart.data.datasets[2].data = data.values_negatives;
+
+                this.sentimentChart.data.datasets[3].data = data.values_neutral;
+                this.sentimentChart.update();
+                ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
+                zingchart.MODULESDIR = 'https://cdn.zingchart.com/modules/';
+
+                var myConfig = {
+                    type: 'wordcloud',
+                    options: {
+                        text: data.word_cloud_data,
+                        ignore: ["America", "American", "Applause", "Because", "because", "could", "don’t", "people", "That’s", "that’s", "Their", "their", "there", "these", "thing", "those", "through", "We’re", "we’re", "where", "would"],
+                        maxItems: 200,
+                        aspect: 'flow-center',
+
+                        colorType: 'palette',
+                        palette: ['#D32F2F', '#5D4037', '#1976D2', '#E53935', '#6D4C41', '#1E88E5', '#F44336', '#795548', '#2196F3', '#EF5350', '#8D6E63', '#42A5F5'],
+
+                        style: {
+                            fontFamily: 'Crete Round',
+
+                            hoverState: {
+                                backgroundColor: '#D32F2F',
+                                borderRadius: 2,
+                                fontColor: 'white'
+                            },
+                            tooltip: {
+                                text: '%text: %hits',
+                                visible: true,
+                                alpha: 0.9,
+                                backgroundColor: '#1976D2',
+                                borderRadius: 2,
+                                borderColor: 'none',
+                                fontColor: 'white',
+                                fontFamily: 'Georgia',
+                                textAlpha: 1
+                            }
+                        }
+                    },
+
+                    source: {
+                        // text: '--President Barack Obama<br> Selma 50th anniversary speech<br>March 7, 2015',
+                        // //Source: https://obamawhitehouse.archives.gov/the-press-office/2015/03/07/remarks-president-50th-anniversary-selma-montgomery-marches
+                        // fontColor: '#64B5F6',
+                        // fontSize: 10,
+                        // fontFamily: 'Georgia',
+                        // fontWeight: 'normal',
+                        // marginBottom: '10%'
+                    }
+
+
+                };
+
+                zingchart.render({
+                    id: 'myChart',
+                    data: myConfig,
+                    height: '500',
+                    width: '100%'
+                });
+
+
 
             } else {
                 console.log(response.error)
