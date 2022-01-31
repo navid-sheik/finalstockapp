@@ -1,0 +1,13 @@
+p {
+    background-color: red;
+}
+
+.btn-sample:active {
+    box-shadow: none;
+}
+
+.btn-success:active:focus {
+    color: #ffffff;
+    background-color: #161617;
+    border-color: #494F57;
+}

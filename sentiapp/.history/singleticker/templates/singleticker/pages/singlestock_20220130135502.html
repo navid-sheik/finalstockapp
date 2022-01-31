@@ -1,0 +1,722 @@
+{% extends "singleticker/base.html" %} {% block content %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<div id="app" class="container">
+    <div class="row">
+        <div id="ticke-title">
+            <h1> $TSL </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-price">
+                <div>
+                    <h1> [[currentPrice]] </h1>
+                </div>
+                <div>
+                    <p> + 2.60% ($74.72) </p>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-overview">
+                <div class="row">
+
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+    <div class="row">
+        <div id="left-graph-ticker-container" class="col-8">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
+
+                </div>
+
+
+
+            </div>
+
+            <canvas id="stockChart"></canvas>
+
+        </div>
+        <div id="right-tweet-container" class="col-4">
+            <div class="list-group" v-if="tweet !== null">
+                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                    <div class="d-flex w-100 " style="margin-bottom : 10px;">
+                        <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
+                        <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+
+                    </div>
+                    <div style="word-wrap: break-word;">
+                        <p class="mb-1">[[tweet.full_text]]
+                        </p>
+                        <small>[[tweet.created_at]]</small>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+    <div class="row">
+        <div id="left-graph-ticker-container" class="col-8">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+                <!-- <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
+
+                </div> -->
+
+
+
+            </div>
+
+            <canvas id="analysischart"></canvas>
+
+        </div>
+        <div id="right-tweet-container" class="col-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">Sentiment Overview</h5>
+                    <p class="card-text">Here you can see the public sentiment based on twitter over the last 24 hours </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Compound : </li>
+                    <li class="list-group-item">Posivity : </li>
+                    <li class="list-group-item">Negativity : </li>
+                    <li class="list-group-item">Neutraility : </li>
+                    <li class="list-group-item">Polarity : </li>
+                    <li class="list-group-item">Subjectivity : </li>
+                </ul>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- 
+    {% autoescape off %}
+    {{ tweets }}
+    {% endautoescape %} -->
+
+</div>
+
+{% endblock %} {% block scripts %}
+<script>
+    //   const labelsx = [
+    //     'January',
+    //     'February',
+    //     'March',
+    //     'April',
+    //     'May',
+    //     'June',
+    //   ];
+
+    //   const data = {
+    //     labels: labelsx,
+    //     datasets: [{
+    //       label: 'My First dataset',
+    //       backgroundColor: 'rgb(255, 99, 132)',
+    //       borderColor: 'rgb(255, 99, 132)',
+    //       data: [0, 10, 5, 2, 20, 30, 45],
+    //     }]
+    //   };
+
+    //   const config = {
+    //                 type: 'line',
+    //                 data: data,
+    //                 options: {
+    //                     xAxes: [{
+    //                     type: 'time',
+    //                     time: {
+    //                         parser: 'YYYY-MM-DD HH:mm:ss',
+    //                         unit: 'minute',
+    //                         displayFormats: {
+    //                             'minute': 'YYYY-MM-DD HH:mm:ss',
+    //                             'hour': 'YYYY-MM-DD HH:mm:ss'
+    //                         }
+    //                     },
+    //                     ticks: {
+    //                         source: 'data'
+    //                     }
+    //                 }]        }
+    //              };
+
+    //   const myChart = new Chart(
+    //     document.getElementById('myChart'),
+    //     config
+    //   );
+
+
+
+
+
+
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                currentPrice: 0,
+                stockSocket: null,
+                labelsx: null,
+                data: null,
+                config: null,
+                myChart: null,
+                tweet: null,
+                labelSentiment: [],
+                dataSentiment: [],
+                configSentiment: null,
+                sentimentChart: null,
+
+
+
+            }
+        },
+
+        async created() {
+
+            var stockPath = window.location.pathname.split('/');
+            var stockSingle = stockPath[2]
+
+            this.stockSocket = new WebSocket(
+                'ws://' +
+                window.location.host +
+                '/ws/singlestock/' +
+                stockSingle + '/'
+
+            );
+            console.log(this.stockSocket)
+            let self = this
+            this.stockSocket.onmessage = function(e) {
+                if (typeof e !== 'undefined') {
+                    var response = JSON.parse(e.data);
+                    console.log(response);
+
+                    self.currentPrice = response.latestPrice;
+
+
+                };
+
+
+
+
+            };
+
+            this.stockSocket.onclose = function(e) {
+                console.log(e.error)
+                console.error('Chat socket closed unexpectedly');
+            };
+
+
+            //make a get request
+            var pathArray = window.location.pathname.split('/');
+            console.log(pathArray[2])
+            var urlWithPath = "{%url 'singleticker:get_current_quote' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            let response = await fetch(urlWithPath);
+            if (response.ok) {
+                let data = await response.json();
+                console.log(data.stock_quote)
+                this.currentPrice = data.stock_quote.latestPrice
+            } else {
+                alert("failed to load the list of hobbies");
+            }
+
+
+
+
+
+
+
+
+
+            this.labelsx = [
+
+            ];
+
+            this.data = {
+                labels: this.labelsx,
+                datasets: [{
+                    label: 'Last 24 hours',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [],
+                }]
+            };
+
+            this.config = {
+                type: 'line',
+                data: this.data,
+                options: {
+                    responsive: true,
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            parser: 'YYYY-MM-DD HH:mm:ss',
+                            unit: 'minute',
+                            displayFormats: {
+                                'minute': 'YYYY-MM-DD HH:mm:ss',
+                                'hour': 'YYYY-MM-DD HH:mm:ss'
+                            }
+                        },
+                        ticks: {
+                            source: 'data'
+                        }
+                    }]
+                }
+            };
+
+
+
+            this.myChart = new Chart(
+                document.getElementById('stockChart'),
+                this.config
+            );
+            var pathArray = window.location.pathname.split('/');
+
+            var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+            histogramPath = histogramPath.replace("50000000000000", "5d")
+            let responseHistogram = await fetch(histogramPath);
+            if (responseHistogram.ok) {
+                let data = await responseHistogram.json();
+
+                //change data.map for dynamic
+                var prices = data.stock_quote.map(x => x.open);
+                console.log(prices)
+                var dates = data.stock_quote.map(x => x.date);
+                console.log(dates);
+
+                console.log(data.stock_quote)
+
+
+                // var mybarChart = document.getElementById('myChart');
+
+                // console.log(mybarChart);
+                console.log(dates);
+
+                this.myChart.data.labels = dates;
+                this.myChart.data.datasets[0].data = prices;
+                this.myChart.update();
+            } else {
+                alert("failed to load the list of hobbies");
+            }
+
+
+
+
+            //TWEET
+            var urlWithPathTweet = "{%url 'singleticker:get_hot_tweet' %}";
+            let responseTweet = await fetch(urlWithPathTweet);
+            if (responseTweet.ok) {
+                let data = await responseTweet.json();
+                console.log("TWEET");
+                data = JSON.parse(data.tweet);
+                this.tweet = data;
+                console.log(data)
+
+
+
+            } else {
+                console.log(response.error)
+                alert("failed to load the list of hobbies");
+            }
+
+
+        },
+        methods: {
+
+            async stockHistoryDynamics() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "dynamic")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.data.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.data.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory5Days() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5d")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Month() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistory3Months() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "3m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Year() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+            async stockHistory5Years() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistoryMax() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "max")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+
+
+
+        }
+    })
+    myApp.mount('#app');
+</script>
+{% endblock %}

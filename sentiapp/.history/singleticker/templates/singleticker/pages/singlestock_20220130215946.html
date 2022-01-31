@@ -1,0 +1,1467 @@
+{% extends "singleticker/base.html" %} {% block content %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+
+<!-- Chart code -->
+<script>
+    am5.ready(function() {
+
+        // Create root element
+        // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+        var root = am5.Root.new("chartdiv");
+
+
+        // Set themes
+        // https://www.amcharts.com/docs/v5/concepts/themes/
+        root.setThemes([
+            am5themes_Animated.new(root)
+        ]);
+
+
+        // Add series
+        // https://www.amcharts.com/docs/v5/charts/word-cloud/
+        var series = root.container.children.push(am5wc.WordCloud.new(root, {
+            maxCount: 100,
+            minWordLength: 2,
+            maxFontSize: am5.percent(35),
+            text: "Though yet of Hamlet our dear brother's death The memory be green, and that it us befitted To bear our hearts in grief and our whole kingdom To be contracted in one brow of woe, Yet so far hath discretion fought with nature That we with wisest sorrow think on him, Together with remembrance of ourselves. Therefore our sometime sister, now our queen, The imperial jointress to this warlike state, Have we, as 'twere with a defeated joy,-- With an auspicious and a dropping eye, With mirth in funeral and with dirge in marriage, In equal scale weighing delight and dole,-- Taken to wife: nor have we herein barr'd Your better wisdoms, which have freely gone With this affair along. For all, our thanks. Now follows, that you know, young Fortinbras, Holding a weak supposal of our worth, Or thinking by our late dear brother's death Our state to be disjoint and out of frame, Colleagued with the dream of his advantage, He hath not fail'd to pester us with message, Importing the surrender of those lands Lost by his father, with all bonds of law, To our most valiant brother. So much for him. Now for ourself and for this time of meeting: Thus much the business is: we have here writ To Norway, uncle of young Fortinbras,-- Who, impotent and bed-rid, scarcely hears Of this his nephew's purpose,--to suppress His further gait herein; in that the levies, The lists and full proportions, are all made Out of his subject: and we here dispatch You, good Cornelius, and you, Voltimand, For bearers of this greeting to old Norway; Giving to you no further personal power To business with the king, more than the scope Of these delated articles allow. Farewell, and let your haste commend your duty. Tis sweet and commendable in your nature, Hamlet,To give these mourning duties to your father: But, you must know, your father lost a father; That father lost, lost his, and the survivor bound In filial obligation for some term To do obsequious sorrow: but to persever In obstinate condolement is a course Of impious stubbornness; 'tis unmanly grief; It shows a will most incorrect to heaven, A heart unfortified, a mind impatient, An understanding simple and unschool'd: For what we know must be and is as common As any the most vulgar thing to sense, Why should we in our peevish opposition Take it to heart? Fie! 'tis a fault to heaven, A fault against the dead, a fault to nature, To reason most absurd: whose common theme Is death of fathers, and who still hath cried, From the first corse till he that died to-day, 'This must be so.' We pray you, throw to earth This unprevailing woe, and think of us As of a father: for let the world take note, You are the most immediate to our throne; And with no less nobility of love Than that which dearest father bears his son, Do I impart toward you. For your intent In going back to school in Wittenberg, It is most retrograde to our desire: And we beseech you, bend you to remain Here, in the cheer and comfort of our eye, Our chiefest courtier, cousin, and our son.",
+        }));
+
+
+        // Configure labels
+        series.labels.template.setAll({
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 5,
+            paddingRight: 5,
+            fontFamily: "Courier New"
+        });
+
+    }); // end am5.ready()
+</script>
+
+<div id="app" class="container">
+    <div class="row">
+        <div id="ticke-title">
+            <h1> $TSL </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-price">
+                <div>
+                    <h1> [[currentPrice]] </h1>
+                </div>
+                <div>
+                    <p> + 2.60% ($74.72) </p>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div id="left-ticker-container" class="col-sm">
+
+            <div id="ticker-overview">
+                <div class="row">
+
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+                    <div class="col">
+                        <p> Market Cap : 123</p>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+    <div class="row" style="margin-top: 50px;">
+        <div id="left-graph-ticker-container" class="col-8">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
+
+                </div>
+
+
+
+            </div>
+
+            <canvas id="stockChart"></canvas>
+
+        </div>
+        <div id="right-tweet-container" class="col-4">
+            <div class="list-group" v-if="tweet !== null">
+                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                    <div class="d-flex w-100 " style="margin-bottom : 10px;">
+                        <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
+                        <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+
+                    </div>
+                    <div style="word-wrap: break-word;">
+                        <p class="mb-1">[[tweet.full_text]]
+                        </p>
+                        <small>[[tweet.created_at]]</small>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+    <div class="row" style="margin-top: 50px;">
+        <div id="left-graph-ticker-container" class="col-8">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+
+                </div>
+
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+
+                </div>
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">5Y</button>
+
+                </div>
+
+                <!-- <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
+
+                </div> -->
+
+
+
+            </div>
+
+            <canvas id="analysischart"></canvas>
+
+        </div>
+        <div id="right-tweet-container" class="col-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">Sentiment Overview</h5>
+                    <p class="card-text">Here you can see the public sentiment based on twitter over the last 24 hours </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Compound : </li>
+                    <li class="list-group-item">Posivity : </li>
+                    <li class="list-group-item">Negativity : </li>
+                    <li class="list-group-item">Neutraility : </li>
+                    <li class="list-group-item">Polarity : </li>
+                    <li class="list-group-item">Subjectivity : </li>
+                </ul>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="row" style="margin-top: 50px;">
+        <div class="col">
+            1 of 2
+        </div>
+
+        <div class="col">
+            <canvas id="canvas"></canvas>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- 
+    {% autoescape off %}
+    {{ tweets }}
+    {% endautoescape %} -->
+
+</div>
+
+{% endblock %} {% block scripts %}
+<script>
+    const words = [{
+        key: "word",
+        value: 10
+    }, {
+        key: "words",
+        value: 8
+    }, {
+        key: "sprite",
+        value: 7
+    }, {
+        key: "placed",
+        value: 5
+    }, {
+        key: "layout",
+        value: 4
+    }, {
+        key: "algorithm",
+        value: 4
+    }, {
+        key: "area",
+        value: 4
+    }, {
+        key: "without",
+        value: 3
+    }, {
+        key: "step",
+        value: 3
+    }, {
+        key: "bounding",
+        value: 3
+    }, {
+        key: "retrieve",
+        value: 3
+    }, {
+        key: "operation",
+        value: 3
+    }, {
+        key: "collision",
+        value: 3
+    }, {
+        key: "candidate",
+        value: 3
+    }, {
+        key: "32",
+        value: 2
+    }, {
+        key: "placement",
+        value: 2
+    }, {
+        key: "time",
+        value: 2
+    }, {
+        key: "possible",
+        value: 2
+    }, {
+        key: "even",
+        value: 2
+    }, {
+        key: "simple",
+        value: 2
+    }, {
+        key: "starting",
+        value: 2
+    }, {
+        key: "previously",
+        value: 2
+    }, {
+        key: "move",
+        value: 2
+    }, {
+        key: "perform",
+        value: 2
+    }, {
+        key: "hierarchical",
+        value: 2
+    }, {
+        key: "draw",
+        value: 2
+    }, {
+        key: "pixel",
+        value: 2
+    }, {
+        key: "data",
+        value: 2
+    }, {
+        key: "separately",
+        value: 2
+    }, {
+        key: "expensive",
+        value: 2
+    }, {
+        key: "pixels",
+        value: 2
+    }, {
+        key: "masks",
+        value: 2
+    }, {
+        key: "implementation",
+        value: 2
+    }, {
+        key: "detection",
+        value: 2
+    }, {
+        key: "larger",
+        value: 2
+    }, {
+        key: "whole",
+        value: 2
+    }, {
+        key: "comparing",
+        value: 2
+    }, {
+        key: "box",
+        value: 2
+    }, {
+        key: "large",
+        value: 2
+    }, {
+        key: "think",
+        value: 2
+    }, {
+        key: "version",
+        value: 2
+    }, {
+        key: "single",
+        value: 2
+    }, {
+        key: "tree",
+        value: 2
+    }, {
+        key: "Cloud",
+        value: 1
+    }, {
+        key: "Generator",
+        value: 1
+    }, {
+        key: "Works",
+        value: 1
+    }, {
+        key: "positioning",
+        value: 1
+    }, {
+        key: "overlap",
+        value: 1
+    }, {
+        key: "available",
+        value: 1
+    }, {
+        key: "GitHub",
+        value: 1
+    }, {
+        key: "open",
+        value: 1
+    }, {
+        key: "source",
+        value: 1
+    }, {
+        key: "license",
+        value: 1
+    }, {
+        key: "d3cloud",
+        value: 1
+    }, {
+        key: "Note",
+        value: 1
+    }, {
+        key: "code",
+        value: 1
+    }, {
+        key: "converting",
+        value: 1
+    }, {
+        key: "text",
+        value: 1
+    }, {
+        key: "rendering",
+        value: 1
+    }, {
+        key: "final",
+        value: 1
+    }, {
+        key: "output",
+        value: 1
+    }, {
+        key: "requires",
+        value: 1
+    }, {
+        key: "additional",
+        value: 1
+    }, {
+        key: "development",
+        value: 1
+    }, {
+        key: "quite",
+        value: 1
+    }, {
+        key: "slow",
+        value: 1
+    }, {
+        key: "hundred",
+        value: 1
+    }, {
+        key: "run",
+        value: 1
+    }, {
+        key: "asynchronously",
+        value: 1
+    }, {
+        key: "configurable",
+        value: 1
+    }, {
+        key: "size",
+        value: 1
+    }, {
+        key: "makes",
+        value: 1
+    }, {
+        key: "animate",
+        value: 1
+    }, {
+        key: "stuttering",
+        value: 1
+    }, {
+        key: "recommended",
+        value: 1
+    }, {
+        key: "always",
+        value: 1
+    }, {
+        key: "use",
+        value: 1
+    }, {
+        key: "animations",
+        value: 1
+    }, {
+        key: "prevents",
+        value: 1
+    }, {
+        key: "browsers",
+        value: 1
+    }, {
+        key: "event",
+        value: 1
+    }, {
+        key: "loop",
+        value: 1
+    }, {
+        key: "blocking",
+        value: 1
+    }, {
+        key: "placing",
+        value: 1
+    }, {
+        key: "incredibly",
+        value: 1
+    }, {
+        key: "important",
+        value: 1
+    }, {
+        key: "Attempt",
+        value: 1
+    }, {
+        key: "place",
+        value: 1
+    }, {
+        key: "point",
+        value: 1
+    }, {
+        key: "usually",
+        value: 1
+    }, {
+        key: "near",
+        value: 1
+    }, {
+        key: "middle",
+        value: 1
+    }, {
+        key: "somewhere",
+        value: 1
+    }, {
+        key: "central",
+        value: 1
+    }, {
+        key: "horizontal",
+        value: 1
+    }, {
+        key: "line",
+        value: 1
+    }, {
+        key: "intersects",
+        value: 1
+    }, {
+        key: "one",
+        value: 1
+    }, {
+        key: "along",
+        value: 1
+    }, {
+        key: "increasing",
+        value: 1
+    }, {
+        key: "spiral",
+        value: 1
+    }, {
+        key: "Repeat",
+        value: 1
+    }, {
+        key: "intersections",
+        value: 1
+    }, {
+        key: "found",
+        value: 1
+    }, {
+        key: "hard",
+        value: 1
+    }, {
+        key: "part",
+        value: 1
+    }, {
+        key: "making",
+        value: 1
+    }, {
+        key: "efficiently",
+        value: 1
+    }, {
+        key: "According",
+        value: 1
+    }, {
+        key: "Jonathan",
+        value: 1
+    }, {
+        key: "Feinberg",
+        value: 1
+    }, {
+        key: "Wordle",
+        value: 1
+    }, {
+        key: "uses",
+        value: 1
+    }, {
+        key: "combination",
+        value: 1
+    }, {
+        key: "boxes",
+        value: 1
+    }, {
+        key: "quadtrees",
+        value: 1
+    }, {
+        key: "achieve",
+        value: 1
+    }, {
+        key: "reasonable",
+        value: 1
+    }, {
+        key: "speeds",
+        value: 1
+    }, {
+        key: "Glyphs",
+        value: 1
+    }, {
+        key: "JavaScript",
+        value: 1
+    }, {
+        key: "isnt",
+        value: 1
+    }, {
+        key: "way",
+        value: 1
+    }, {
+        key: "precise",
+        value: 1
+    }, {
+        key: "glyph",
+        value: 1
+    }, {
+        key: "shapes",
+        value: 1
+    }, {
+        key: "via",
+        value: 1
+    }, {
+        key: "DOM",
+        value: 1
+    }, {
+        key: "except",
+        value: 1
+    }, {
+        key: "perhaps",
+        value: 1
+    }, {
+        key: "SVG",
+        value: 1
+    }, {
+        key: "fonts",
+        value: 1
+    }, {
+        key: "Instead",
+        value: 1
+    }, {
+        key: "hidden",
+        value: 1
+    }, {
+        key: "canvas",
+        value: 1
+    }, {
+        key: "element",
+        value: 1
+    }, {
+        key: "Retrieving",
+        value: 1
+    }, {
+        key: "many",
+        value: 1
+    }, {
+        key: "batch",
+        value: 1
+    }, {
+        key: "Sprites",
+        value: 1
+    }, {
+        key: "initial",
+        value: 1
+    }, {
+        key: "performed",
+        value: 1
+    }, {
+        key: "using",
+        value: 1
+    }, {
+        key: "doesnt",
+        value: 1
+    }, {
+        key: "copy",
+        value: 1
+    }, {
+        key: "appropriate",
+        value: 1
+    }, {
+        key: "position",
+        value: 1
+    }, {
+        key: "representing",
+        value: 1
+    }, {
+        key: "advantage",
+        value: 1
+    }, {
+        key: "involves",
+        value: 1
+    }, {
+        key: "relevant",
+        value: 1
+    }, {
+        key: "rather",
+        value: 1
+    }, {
+        key: "previous",
+        value: 1
+    }, {
+        key: "Somewhat",
+        value: 1
+    }, {
+        key: "surprisingly",
+        value: 1
+    }, {
+        key: "lowlevel",
+        value: 1
+    }, {
+        key: "hack",
+        value: 1
+    }, {
+        key: "made",
+        value: 1
+    }, {
+        key: "tremendous",
+        value: 1
+    }, {
+        key: "difference",
+        value: 1
+    }, {
+        key: "constructing",
+        value: 1
+    }, {
+        key: "compressed",
+        value: 1
+    }, {
+        key: "blocks",
+        value: 1
+    }, {
+        key: "1bit",
+        value: 1
+    }, {
+        key: "32bit",
+        value: 1
+    }, {
+        key: "integers",
+        value: 1
+    }, {
+        key: "thus",
+        value: 1
+    }, {
+        key: "reducing",
+        value: 1
+    }, {
+        key: "number",
+        value: 1
+    }, {
+        key: "checks",
+        value: 1
+    }, {
+        key: "memory",
+        value: 1
+    }, {
+        key: "times",
+        value: 1
+    }, {
+        key: "fact",
+        value: 1
+    }, {
+        key: "turned",
+        value: 1
+    }, {
+        key: "beat",
+        value: 1
+    }, {
+        key: "quadtree",
+        value: 1
+    }, {
+        key: "everything",
+        value: 1
+    }, {
+        key: "tried",
+        value: 1
+    }, {
+        key: "areas",
+        value: 1
+    }, {
+        key: "font",
+        value: 1
+    }, {
+        key: "sizes",
+        value: 1
+    }, {
+        key: "primarily",
+        value: 1
+    }, {
+        key: "needs",
+        value: 1
+    }, {
+        key: "test",
+        value: 1
+    }, {
+        key: "per",
+        value: 1
+    }, {
+        key: "whereas",
+        value: 1
+    }, {
+        key: "compare",
+        value: 1
+    }, {
+        key: "every",
+        value: 1
+    }, {
+        key: "overlaps",
+        value: 1
+    }, {
+        key: "slightly",
+        value: 1
+    }, {
+        key: "Another",
+        value: 1
+    }, {
+        key: "possibility",
+        value: 1
+    }, {
+        key: "merge",
+        value: 1
+    }, {
+        key: "fairly",
+        value: 1
+    }, {
+        key: "though",
+        value: 1
+    }, {
+        key: "compared",
+        value: 1
+    }, {
+        key: "analagous",
+        value: 1
+    }, {
+        key: "mask",
+        value: 1
+    }, {
+        key: "essentially",
+        value: 1
+    }, {
+        key: "ORing",
+        value: 1
+    }, {
+        key: "block",
+        value: 1
+    }];
+
+    const chart = new Chart(document.getElementById("canvas").getContext("2d"), {
+        type: "wordCloud",
+        data: {
+            labels: words.map((d) => d.key),
+            datasets: [{
+                label: "",
+                data: words.map((d) => 10 + d.value * 10)
+            }]
+        },
+        options: {
+            title: {
+                display: false,
+                text: "Chart.js Word Cloud"
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+
+    //   const labelsx = [
+    //     'January',
+    //     'February',
+    //     'March',
+    //     'April',
+    //     'May',
+    //     'June',
+    //   ];
+
+    //   const data = {
+    //     labels: labelsx,
+    //     datasets: [{
+    //       label: 'My First dataset',
+    //       backgroundColor: 'rgb(255, 99, 132)',
+    //       borderColor: 'rgb(255, 99, 132)',
+    //       data: [0, 10, 5, 2, 20, 30, 45],
+    //     }]
+    //   };
+
+    //   const config = {
+    //                 type: 'line',
+    //                 data: data,
+    //                 options: {
+    //                     xAxes: [{
+    //                     type: 'time',
+    //                     time: {
+    //                         parser: 'YYYY-MM-DD HH:mm:ss',
+    //                         unit: 'minute',
+    //                         displayFormats: {
+    //                             'minute': 'YYYY-MM-DD HH:mm:ss',
+    //                             'hour': 'YYYY-MM-DD HH:mm:ss'
+    //                         }
+    //                     },
+    //                     ticks: {
+    //                         source: 'data'
+    //                     }
+    //                 }]        }
+    //              };
+
+    //   const myChart = new Chart(
+    //     document.getElementById('myChart'),
+    //     config
+    //   );
+
+
+
+
+
+
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                currentPrice: 0,
+                stockSocket: null,
+                labelsx: null,
+                data: null,
+                config: null,
+                myChart: null,
+                tweet: null,
+                labelSentiment: [],
+                dataSentiment: [],
+                configSentiment: null,
+                sentimentChart: null,
+
+
+
+            }
+        },
+
+        async created() {
+
+            var stockPath = window.location.pathname.split('/');
+            var stockSingle = stockPath[2]
+
+            this.stockSocket = new WebSocket(
+                'ws://' +
+                window.location.host +
+                '/ws/singlestock/' +
+                stockSingle + '/'
+
+            );
+            console.log(this.stockSocket)
+            let self = this
+            this.stockSocket.onmessage = function(e) {
+                if (typeof e !== 'undefined') {
+                    var response = JSON.parse(e.data);
+                    console.log(response);
+
+                    self.currentPrice = response.latestPrice;
+
+
+                };
+
+
+
+
+            };
+
+            this.stockSocket.onclose = function(e) {
+                console.log(e.error)
+                console.error('Chat socket closed unexpectedly');
+            };
+
+
+            //make a get request
+            var pathArray = window.location.pathname.split('/');
+            console.log(pathArray[2])
+            var urlWithPath = "{%url 'singleticker:get_current_quote' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            let response = await fetch(urlWithPath);
+            if (response.ok) {
+                let data = await response.json();
+                console.log(data.stock_quote)
+                this.currentPrice = data.stock_quote.latestPrice
+            } else {
+                alert("failed to load the list of hobbies");
+            }
+
+
+
+
+
+
+
+
+
+            this.labelsx = [
+
+            ];
+
+            this.data = {
+                labels: this.labelsx,
+                datasets: [{
+                    label: 'Last 24 hours',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [],
+                }]
+            };
+
+            this.config = {
+                type: 'line',
+                data: this.data,
+                options: {
+                    responsive: true,
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            parser: 'YYYY-MM-DD HH:mm:ss',
+                            unit: 'minute',
+                            displayFormats: {
+                                'minute': 'YYYY-MM-DD HH:mm:ss',
+                                'hour': 'YYYY-MM-DD HH:mm:ss'
+                            }
+                        },
+                        ticks: {
+                            source: 'data'
+                        }
+                    }]
+                }
+            };
+
+
+
+            this.myChart = new Chart(
+                document.getElementById('stockChart'),
+                this.config
+            );
+            var pathArray = window.location.pathname.split('/');
+
+            var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+            histogramPath = histogramPath.replace("50000000000000", "5d")
+            let responseHistogram = await fetch(histogramPath);
+            if (responseHistogram.ok) {
+                let data = await responseHistogram.json();
+
+                //change data.map for dynamic
+                var prices = data.stock_quote.map(x => x.open);
+                console.log(prices)
+                var dates = data.stock_quote.map(x => x.date);
+                console.log(dates);
+
+                console.log(data.stock_quote)
+
+
+                // var mybarChart = document.getElementById('myChart');
+
+                // console.log(mybarChart);
+                console.log(dates);
+
+                this.myChart.data.labels = dates;
+                this.myChart.data.datasets[0].data = prices;
+                this.myChart.update();
+            } else {
+                alert("failed to load the list of hobbies");
+            }
+
+
+
+
+            //TWEET
+            var urlWithPathTweet = "{%url 'singleticker:get_hot_tweet' %}";
+            let responseTweet = await fetch(urlWithPathTweet);
+            if (responseTweet.ok) {
+                let data = await responseTweet.json();
+                console.log("TWEET");
+                data = JSON.parse(data.tweet);
+                this.tweet = data;
+                console.log(data)
+
+
+
+            } else {
+                console.log(response.error)
+                alert("failed to load the list of hobbies");
+            }
+
+
+
+
+            this.labelSentiment = [
+
+            ];
+
+            this.dataSentiment = {
+                labels: this.labelSentiment,
+                datasets: [{
+                    label: 'Last 24 hours',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [],
+                }]
+            };
+
+            this.configSentiment = {
+                type: 'line',
+                data: this.dataSentiment,
+                options: {
+                    responsive: true,
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            parser: 'YYYY-MM-DD HH:mm:ss',
+                            unit: 'minute',
+                            displayFormats: {
+                                'minute': 'YYYY-MM-DD HH:mm:ss',
+                                'hour': 'YYYY-MM-DD HH:mm:ss'
+                            }
+                        },
+                        ticks: {
+                            source: 'data'
+                        }
+                    }]
+                }
+            };
+
+
+
+            this.sentimentChart = new Chart(
+                document.getElementById('analysischart'),
+                this.configSentiment
+            );
+
+
+            //GET SENTIMENT DATA
+
+
+            var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2]);
+            let responseSentiment = await fetch(urlWithSentiment);
+            if (responseSentiment.ok) {
+                let data = await responseSentiment.json();
+                console.log("Sentiment data");
+                console.log(data)
+
+
+
+            } else {
+                console.log(response.error)
+                alert("failed to load the list of hobbies");
+            }
+
+        },
+        methods: {
+
+            async stockHistoryDynamics() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "dynamic")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.data.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.data.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory5Days() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5d")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Month() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistory3Months() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "3m")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+            async stockHistory1Year() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "1y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+            async stockHistory5Years() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "5y")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+            async stockHistoryMax() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "max")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
+
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.map(x => x.date);
+                    console.log(dates);
+
+                    console.log(data.stock_quote)
+
+
+                    // var mybarChart = document.getElementById('myChart');
+
+                    // console.log(mybarChart);
+                    console.log(dates);
+
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+
+
+
+
+        }
+    })
+    myApp.mount('#app');
+</script>
+{% endblock %}
