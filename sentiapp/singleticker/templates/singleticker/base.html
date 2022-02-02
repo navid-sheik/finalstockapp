@@ -25,7 +25,7 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'singleticker/style.css' %}">
 
-
+    <link href='//www.zingchart.com/css/zcDocs.css' rel='stylesheet' type='text/css'>
 
     <title>{% block title %}Movie app{% endblock %} </title>
 </head>
@@ -72,7 +72,9 @@
 
     <link href="https://fonts.googleapis.com/css?family=Crete+Round" rel="stylesheet">
 
-    <script nonce="undefined" src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src='//code.jquery.com/jquery-2.1.4.min.js'></script>
+    <script src="//www.zingchart.com/scripts/zcDocs.js"></script>
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
     {% block scripts %} {% endblock %}
 
 

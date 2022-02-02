@@ -159,38 +159,38 @@
             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 
                 <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
+                    <button type="button" class="btn btn-primary" @click.native="sentimentAnalysis24Hours()">1D</button>
 
                 </div>
 
 
 
                 <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
+                    <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(5)">5D</button>
 
                 </div>
 
 
 
                 <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
+                    <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(30)">1M</button>
 
                 </div>
 
                 <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
-
-                </div>
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
+                    <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(90)">3M</button>
 
                 </div>
 
 
                 <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">5Y</button>
+                    <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(365)">1Y</button>
+
+                </div>
+
+
+                <div class="btn-group mr-3" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(1825)">5Y</button>
 
                 </div>
 
@@ -313,6 +313,8 @@
     //     config
     //   );
 
+    ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
+    zingchart.MODULESDIR = 'https://cdn.zingchart.com/modules/';
 
 
 
@@ -385,8 +387,20 @@
                     var response = JSON.parse(e.data);
                     console.log(response);
 
-                    self.currentPrice = response.latestPrice;
 
+                    if (response.hasOwnProperty('graph')) {
+                        console.log("exustubgs")
+                        var prices = response.graph.data.map(x => x.open);
+                        console.log(prices)
+                        var dates = response.graph.data.map(x => x.date);
+                        console.log(dates);
+                        self.myChart.data.labels = dates;
+                        self.myChart.data.datasets[0].data = prices;
+                        self.myChart.update();
+                    } else {
+                        self.currentPrice = response.latestPrice;
+
+                    }
 
                 };
 
@@ -475,10 +489,10 @@
                 //change data.map for dynamic
                 var prices = data.stock_quote.map(x => x.open);
                 console.log(prices)
-                var dates = data.stock_quote.map(x => x.date);
+                var dates = data.stock_quote.map(x => x.label);
                 console.log(dates);
 
-                console.log(data.stock_quote)
+                // console.log(data.stock_quote)
 
 
                 // var mybarChart = document.getElementById('myChart');
@@ -686,8 +700,6 @@
 
                 this.sentimentChart.data.datasets[3].data = data.values_neutral;
                 this.sentimentChart.update();
-                ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
-                zingchart.MODULESDIR = 'https://cdn.zingchart.com/modules/';
 
                 var myConfig = {
                     type: 'wordcloud',
@@ -773,7 +785,7 @@
 
                     // var mybarChart = document.getElementById('myChart');
 
-                    console.log(mybarChart);
+                    // console.log(mybarChart);
                     console.log(dates);
 
                     this.myChart.data.labels = dates;
@@ -1000,10 +1012,119 @@
 
 
 
+            async sentimentAnalysis24Hours() {
+                var pathArray = window.location.pathname.split('/');
+
+                var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2]);
+                let responseSentiment = await fetch(urlWithSentiment);
+
+                if (responseSentiment.ok) {
+                    let data = await responseSentiment.json();
+                    console.log("Sentiment data");
+                    console.log(data)
+                    this.mean_24_compound = data.mean_compound
+                    this.mean_24_negativity = data.mean_negative
+                    this.mean_24_neutrality = data.mean_neutral
+                    this.mean_24_polarity = data.mean_polarity
+                    this.mean_24_positivity = data.mean_positive
+
+                    this.mean_24_subjectivity = data.mean_subjectivity
+                    this.pieChart.data.datasets[0].data = [data.positive_count, data.negative_count, data.neutral_count];
+
+                    this.pieChart.update();
+                    this.sentimentChart.data.labels = data.dates;
+                    this.sentimentChart.data.datasets[0].data = data.values_compound;
+                    this.sentimentChart.data.datasets[1].data = data.values_positives;
+
+                    this.sentimentChart.data.datasets[2].data = data.values_negatives;
+
+                    this.sentimentChart.data.datasets[3].data = data.values_neutral;
+                    this.sentimentChart.update();
+
+
+
+
+
+                }
+            },
+            async sentimentAnalysisRange(time_range) {
+                var pathArray = window.location.pathname.split('/');
+
+                var urlWithSentiment = "{%url 'singleticker:get_time_range_sentiment' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2]);
+                var urlWithSentimeWithDaterange = urlWithSentiment.replace('50000000000000', time_range)
+                let responseSentiment = await fetch(urlWithSentimeWithDaterange);
+                if (responseSentiment.ok) {
+                    let data = await responseSentiment.json();
+                    console.log("Sentiment data");
+                    console.log(data)
+                    this.mean_24_compound = data.mean_compound
+                    this.mean_24_negativity = data.mean_negative
+                    this.mean_24_neutrality = data.mean_neutral
+                    this.mean_24_polarity = data.mean_polarity
+                    this.mean_24_positivity = data.mean_positive
+
+                    this.mean_24_subjectivity = data.mean_subjectivity
+                    this.pieChart.data.datasets[0].data = [data.positive_count, data.negative_count, data.neutral_count];
+
+                    this.pieChart.update();
+                    this.sentimentChart.data.labels = data.dates;
+                    this.sentimentChart.data.datasets[0].data = data.values_compound;
+                    this.sentimentChart.data.datasets[1].data = data.values_positives;
+
+                    this.sentimentChart.data.datasets[2].data = data.values_negatives;
+
+                    this.sentimentChart.data.datasets[3].data = data.values_neutral;
+                    this.sentimentChart.update();
+
+                    // let output = zingchart.exec('mychart', 'updateobject', {
+                    //     type: 'wordcloud',
+                    //     options: {
+                    //         text: data.word_cloud_data,
+                    //         ignore: ["America", "American", "Applause", "Because", "because", "could", "don’t", "people", "That’s", "that’s", "Their", "their", "there", "these", "thing", "those", "through", "We’re", "we’re", "where", "would"],
+                    //         maxItems: 200,
+                    //         aspect: 'flow-center',
+
+                    //         colorType: 'palette',
+                    //         palette: ['#D32F2F', '#5D4037', '#1976D2', '#E53935', '#6D4C41', '#1E88E5', '#F44336', '#795548', '#2196F3', '#EF5350', '#8D6E63', '#42A5F5'],
+
+                    //         style: {
+                    //             fontFamily: 'Crete Round',
+
+                    //             hoverState: {
+                    //                 backgroundColor: '#D32F2F',
+                    //                 borderRadius: 2,
+                    //                 fontColor: 'white'
+                    //             },
+                    //             tooltip: {
+                    //                 text: '%text: %hits',
+                    //                 visible: true,
+                    //                 alpha: 0.9,
+                    //                 backgroundColor: '#1976D2',
+                    //                 borderRadius: 2,
+                    //                 borderColor: 'none',
+                    //                 fontColor: 'white',
+                    //                 fontFamily: 'Georgia',
+                    //                 textAlpha: 1
+                    //             }
+                    //         }
+                    //     }
+                    // });
+                    // zcdocs.demos.dump('updateobject', output);
+
+
+
+                }
+            },
+
+
+
+
+
+
 
 
         }
-    })
+    });
     myApp.mount('#app');
 </script>
 {% endblock %}
