@@ -80,6 +80,26 @@ class SingleStockConsumer(AsyncWebsocketConsumer):
             task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_sentiment_24Hours", args =  json.dumps([ticker]))
 
 
+    @sync_to_async
+    def addToCeleryBeatRecentTweets(self, ticker):
+        name =   "every-60-seconds-recent=tweets" +  "-" + ticker
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            # args =  json.loads(task.args)
+            # args =  args[0]
+            # if ticker not in args:
+            #     args.append(ticker)
+            task.args =  json.dumps([ticker])
+            task.enabled = True
+            
+            task.save()
+        else:
+            schedule, created  =  IntervalSchedule.objects.get_or_create(every = 60, period =  IntervalSchedule.SECONDS)
+            print(ticker)
+            task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_recent_tweets", args =  json.dumps([ticker]))
+
+
 
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['stock_name']
@@ -91,6 +111,7 @@ class SingleStockConsumer(AsyncWebsocketConsumer):
         await   self.addToCeleryBeatStockInfo(self.room_name)
         await   self.addToCeleryBeatStockIGraphInfo(self.room_name)
         await   self.addToCeleryBeatStockISentimentInfo(self.room_name)
+        await   self.addToCeleryBeatRecentTweets(self.room_name)
 
         await self.accept()
 
@@ -125,11 +146,22 @@ class SingleStockConsumer(AsyncWebsocketConsumer):
             task.enabled = False
             task.save()
 
+    @sync_to_async
+    def stop_celeryBeatTweetsRecent(self, ticker):
+        name =   "every-60-seconds-recent=tweets" +  "-" + ticker
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            task.enabled = False
+            task.save()
+
+
 
     async def disconnect(self, close_code):
         await self.stop_celeryBeatStockInfo(self.room_name)
         await self.stop_celeryBeatStockGraphInfo(self.room_name)
         await self.stop_celeryBeatStockSentimentInfo(self.room_name)
+        await self.stop_celeryBeatTweetsRecent(self.room_name)
         await self.channel_layer.group_discard(self.group_name,self.channel_name)
         
 
@@ -162,6 +194,12 @@ class SingleStockConsumer(AsyncWebsocketConsumer):
         message =  event['sentiment']
         
         await self.send(text_data=json.dumps( {'sentiment' :message} ))
+
+    async def tweets_recent_update(self, event):
+        message =  event['tweets_recent']
+        
+        await self.send(text_data=json.dumps( {'tweets_recent' :message} ))
+   
    
 
 

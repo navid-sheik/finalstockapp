@@ -1,5 +1,6 @@
 
 import datetime
+import re
 import statistics
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -14,8 +15,24 @@ import singleticker
 import asyncio
 import json
 
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from textblob import TextBlob
+from tweepy import OAuthHandler
+import tweepy
 channel_layer  =  get_channel_layer()
 import singleticker.routing
+
+
+
+ACCESS_TOKEN = "1473341591532326912-WaFVz4x6yxfXeZE3sjge7d6F7sVS4A"
+
+ACCESS_TOKEN_SECRET = "jdAUx7NW90EqxsQwk7eYP6G2JbVwJ8MGAUYwadxZU4axB"
+
+CONSUMER_KEY = "UdSOEJpvWgKUkBIuQbTo4S2kS"
+
+CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
+
+
 @shared_task(bind= True)
 def update_price(self, stock):
     
@@ -126,6 +143,52 @@ def update_sentiment_24Hours(self, ticker_id):
     asyncio.set_event_loop(loop)
     loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'sentiment_update', 'sentiment' : json.loads(res)}))
 
+
+
+@shared_task(bind= True)
+def update_recent_tweets(self, ticker_id):
+    stock_ticker = ticker_id.lower()
+    dict  = {"tsla" : "#TSLA #tsla tsla TSLA"}
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
+
+    number_of_tweets = 20
+
+    keyword = dict[stock_ticker]
+    cursor = tweepy.Cursor(api.search_tweets, q=keyword,
+                           tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
+
+    tweets_sentiments  =  []
+    for tweet in cursor:
+        if 'retweeted_status' in tweet._json:
+                full_text_tweet  =  tweet._json['retweeted_status']['full_text']
+        else:
+                full_text_tweet = tweet.full_text
+
+    
+        map_sentimet=  perfomSentimentAnalysis(cleanTweet(full_text_tweet))
+        mytweet  =   tweet._json
+        mytweet['sentiment']  =  map_sentimet['text_sentiment']
+        tweets_sentiments.append(mytweet)
+      
+
+
+    # searched_tweets = [status._json for status in cursor]
+    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
+    print("The json string")
+    res  =  json.dumps(tweets_sentiments, indent = 4, sort_keys = True, default = str)
+    # print(tweets_sentiments)
+    # return JsonResponse({'tweets': json.dumps( tweets_sentiments),})
+
+    name_room  = 'stock_%s' % stock_ticker
+    loop =  asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'tweets_recent_update', 'tweets_recent' : json.loads(res)}))
+
+
+
+
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime):
@@ -145,3 +208,63 @@ def stemmed_text_compress(list):
     for obj in list:
         mytext += obj + " "
     return mytext
+
+
+def perfomSentimentAnalysis (tweet):
+    tweet_sentiment  =  TextBlob(tweet).sentiment
+    score = SentimentIntensityAnalyzer().polarity_scores(tweet)
+    neg = score['neg']
+    neu = score['neu']
+    pos = score['pos']
+    comp = score['compound']
+    sentiment_text  = ""
+    if neg > pos:
+        sentiment_text = "negative"
+    elif pos > neg:
+        sentiment_text = "positive"
+    else:
+        sentiment_text =  "neutral"
+
+    sentiment  = {}
+    sentiment["neg"] = neg
+    sentiment["neu"] = neu
+    sentiment["pos"] = pos
+    sentiment["comp"] = comp
+    sentiment["text_sentiment"] = sentiment_text
+
+    return sentiment
+
+def cleanTweet(tweet):
+    
+    #remove placeholder video 
+    # new_tweet =  re.sub(r'{link}', '', tweet)
+
+    # new_tweet = re.sub(r"\[video\]", '', new_tweet)
+
+    # #not letter , punction , emoji , hash , non  english 
+    # new_tweet =  re.sub(r"[^a-z\s\(\-:\)\\\/\];='#]", '', new_tweet)
+
+
+    #twitter mention 
+    new_tweet =  re.sub(r'@mention', '', tweet)
+
+
+    # it will remove the old style retweet text "RT"
+    new_tweet = re.sub(r'^RT[\s]+', '', new_tweet)
+
+    # it will remove hyperlinks
+    new_tweet = re.sub(r'https?:\/\/.*[\r\n]*', '', new_tweet)
+
+    # it will remove hashtags. We have to be careful here not to remove 
+    # the whole hashtag because text of hashtags contains huge information. 
+    # only removing the hash # sign from the word
+    new_tweet = re.sub(r'#', '', new_tweet)
+
+    # it will remove single numeric terms in the tweet. 
+    new_tweet = re.sub(r'[0-9]', '', new_tweet)
+
+
+    new_tweet = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",new_tweet)
+    new_tweet =  new_tweet.lower()
+ 
+    return new_tweet

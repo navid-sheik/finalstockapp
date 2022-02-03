@@ -64,6 +64,26 @@ def getHotTweet(request):
     print(json_string)
     return JsonResponse({'tweet': json_string})
 
+def get_single_tweet(request, tweet_id):
+
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
+
+
+    tweet = api.get_status(tweet_id)
+    return JsonResponse({'single_tweet' :  json.dumps(tweet)})
+    # number_of_tweets = 100
+
+    # keyword = 'Tesla #tesla'
+    # cursor = tweepy.Cursor(api.search_tweets, q=keyword,
+    #                        tweet_mode="extended", result_type='recent', lang="en").items(1)
+
+    # searched_tweets = [status._json for status in cursor]
+    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
+    # print("The json string")
+    # print(json_string)
+    # return JsonResponse({'tweet': json_string})
 
 
 def getPopularTweets(request, ticker_id):

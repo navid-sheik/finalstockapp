@@ -508,6 +508,18 @@
                         self.sentimentChart.update();
 
 
+                    } else if (response.hasOwnProperty('tweets_recent')) {
+
+                        let data = response.tweets_recent
+                        console.log("Updating recent tweets")
+
+                        console.log(data)
+                        this.tweets_recent = data
+
+
+
+
+
                     } else {
                         self.currentPrice = response.latestPrice;
 
