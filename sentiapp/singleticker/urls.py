@@ -2,7 +2,7 @@ import imp
 from django.contrib import admin
 from django.urls import path, include
 from singleticker import views
-from singleticker.api import fetchStockData, fetchStockDataHistory,getHotTweet,getSentiment24Hours,getSentimentTimeRange, getSearchTwitter,getPopularTweets,getRecentTweets
+from singleticker.api import fetchStockData, fetchStockDataHistory,getHotTweet,getSentiment24Hours,getSentimentTimeRange, getSearchTwitter,getPopularTweets,getRecentTweets, get_tweets_based_sentiment
 app_name =  'singleticker'
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
      path('api/get_search_tweets/<str:keyword_search>', getSearchTwitter, name="get_search_tweets"),
      path('api/get_popular_tweets/<str:ticker_id>', getPopularTweets, name="get_popular_tweets"),
      path('api/get_recent_tweets/<str:ticker_id>', getRecentTweets, name="get_recent_tweets"),
+     path('api/get_sentimental_tweets/<str:ticker_id>', get_tweets_based_sentiment, name="get_sentimental_tweets"),
 
 
    

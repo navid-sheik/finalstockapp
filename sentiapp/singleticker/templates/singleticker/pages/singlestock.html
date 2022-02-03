@@ -152,6 +152,28 @@
 
     </div>
 
+    <div class="row" style="margin-top: 50px;">
+        <h1>Most Popular Tweets</h1>
+        <button @click.native="getRecentTweets()">  Get recent tweets </button>
+        <div class="list-group" v-for="tweet in tweet_list_popular_recent">
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                <div class="d-flex w-100 " style="margin-bottom : 10px;" :style="[tweet.sentiment == 'background-color : green']">
+                    <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
+                    <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+
+                </div>
+                <div style="word-wrap: break-word;">
+                    <p class="mb-1">[[tweet.full_text]]
+                    </p>
+                    <small>[[tweet.created_at]]</small>
+                    <small> Retweets : [[tweet.retweet_count]]</small>
+                    <small> Favorite : [[tweet.favorite_count]]</small>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
 
 
     <div class="row" style="margin-top: 50px;">
@@ -236,10 +258,15 @@
     </div>
 
 
+
+
+
     <div class="row" style="margin-top: 50px;">
-        <h1>Most Popular Tweets</h1>
-        <button @click.native="getRecentTweets()">  Get recent tweets </button>
-        <div class="list-group" v-for="tweet in tweet_list_popular_recent">
+        <h1>Positive, Negative, Neutral</h1>
+        <button @click.native="get_positive_tweets()"> POSITIVE </button>
+        <button @click.native="get_negative_tweets()"> NEGATIVE </button>
+        <button @click.native="get_neutral_tweets()"> NEUTRAL </button>
+        <div class="list-group" v-for="tweet in tweet_list_basedOn_sentiment">
             <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
                 <div class="d-flex w-100 " style="margin-bottom : 10px;" :style="[tweet.sentiment == 'background-color : green']">
                     <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
@@ -412,6 +439,12 @@
                 tweet_list_searched: [],
 
                 tweet_list_popular_recent: [],
+
+                tweet_list_basedOn_sentiment: [],
+
+                tweet_negative_list: [],
+                tweet_neutral_list: [],
+                tweet_positive_list: [],
 
 
 
@@ -871,6 +904,31 @@
                 alert("failed to load the list of hobbies");
             }
 
+            //GET TWEETS BASED ON SENTIMENT 
+
+            //TWEETs popular list 
+            var urlWithPathTweetSentimental = "{%url 'singleticker:get_sentimental_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            let responseTweerListSentimental = await fetch(urlWithPathTweetSentimental);
+            if (responseTweerListSentimental.ok) {
+                let data = await responseTweerListSentimental.json();
+
+                console.log("Tweet sentimental fetched ");
+                negatives = JSON.parse(data.negatives);
+                positives = JSON.parse(data.positives);
+                neutrals = JSON.parse(data.neutrals);
+                console.log(data)
+                this.tweet_negative_list = negatives
+
+                this.tweet_neutral_list = neutrals
+                this.tweet_positive_list = positives
+
+                this.tweet_list_basedOn_sentiment = positives
+
+            } else {
+                console.log(response.error)
+                alert("failed to load the list of hobbies");
+            }
+
 
 
         },
@@ -1265,8 +1323,18 @@
                     console.log(response.error)
                     alert("failed to load the list of hobbies");
                 }
-            }
+            },
 
+            get_positive_tweets() {
+                this.tweet_list_basedOn_sentiment = this.tweet_positive_list
+            },
+
+            get_negative_tweets() {
+                this.tweet_list_basedOn_sentiment = this.tweet_negative_list
+            },
+            get_neutral_tweets() {
+                this.tweet_list_basedOn_sentiment = this.tweet_neutral_list
+            }
 
 
 

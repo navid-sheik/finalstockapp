@@ -16,6 +16,7 @@ from tweepy import Stream, auth
 from tweepy import OAuthHandler
 import tweepy
 from home.models import TweetRecord, HourlyRecord, StockSummary
+from datetime import timedelta
 
 ACCESS_TOKEN = "1473341591532326912-WaFVz4x6yxfXeZE3sjge7d6F7sVS4A"
 
@@ -163,6 +164,62 @@ def getSearchTwitter(request, keyword_search):
     print(searched_tweets)
     return JsonResponse({'tweets': json.dumps( searched_tweets)})
 
+
+def get_tweets_based_sentiment(request, ticker_id):
+    dict  = {"tsla" : "#TSLA #tsla tsla TSLA"}
+    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
+
+    now = datetime.datetime.today().now()
+    prev=now-timedelta(days=1)
+    now=now.strftime("%Y-%m-%d")
+    prev=prev.strftime("%Y-%m-%d")
+
+    negative_list  =  []
+    positive_list =  []
+    neutral_list =  []
+    
+    number_of_tweets = 20
+
+    keyword = dict[ticker_id]
+    cursor = tweepy.Cursor(api.search_tweets, q=keyword, since=prev, until=now,
+                           tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
+
+    tweets_sentiments  =  []
+    for tweet in cursor:
+        if 'retweeted_status' in tweet._json:
+                full_text_tweet  =  tweet._json['retweeted_status']['full_text']
+        else:
+                full_text_tweet = tweet.full_text
+
+    
+        map_sentimet=  perfomSentimentAnalysis(cleanTweet(full_text_tweet))
+        mytweet  =   tweet._json
+        if map_sentimet['text_sentiment'] == 'positive':
+            positive_list.append(mytweet)
+
+        elif map_sentimet['text_sentiment'] == 'negative':
+            negative_list.append(mytweet)
+        else:
+            neutral_list.append(mytweet)
+        # mytweet  =   tweet._json
+        # mytweet['sentiment']  =  map_sentimet['text_sentiment']
+        # tweets_sentiments.append(mytweet)
+      
+
+
+    # searched_tweets = [status._json for status in cursor]
+    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
+    print("The json string")
+    
+    print(tweets_sentiments)
+    return JsonResponse({'negatives': json.dumps( negative_list),
+                         'positives' :  json.dumps(positive_list),
+                         'neutrals' :   json.dumps(neutral_list)
+    
+    
+    })
 
 def getSentiment24Hours(request, ticker_id):
     stock = get_object_or_404(StockSummary, ticker=ticker_id)
