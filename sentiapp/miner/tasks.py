@@ -38,6 +38,8 @@ from collections import Counter
 import requests
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from operator import attrgetter
+
 # import twitter_credentials
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
@@ -129,7 +131,7 @@ def mineTweets (self, ticker):
         map_sentimet=  perfomSentimentAnalysis(cleanTweet(full_text_tweet))
         print("The negative value is  ",  map_sentimet['neg'])
         
-
+        print("Tweets count" , tweet.retweet_count)
         try:
             tweet_record = TweetRecord.objects.get(tweet_id=tweet.id_str)
         except TweetRecord.DoesNotExist:
@@ -146,7 +148,9 @@ def mineTweets (self, ticker):
                 neg =  map_sentimet['neg'],
                 neu =  map_sentimet['neu'],
                 pos =  map_sentimet['pos'],
-                compound  = map_sentimet['comp']
+                compound  = map_sentimet['comp'],
+                retweet = tweet.retweet_count,
+                likes =  tweet.favorite_count,
             )
             tweet_record.save()
 
@@ -170,17 +174,30 @@ def createHourlyRecord (self,ticker):
     count_neutral= 0
     count_positive = 0
 
+    tweet_negative_list = []
+    tweet_positive_list = []
+    tweet_neutral_list = []
+
+   
+   
+
     for tweet in list_records_previous_day:
         if tweet.neg > tweet.pos:
-          
+            tweet_negative_list.append(tweet)
             count_negative += 1
         elif tweet.pos > tweet.neg:
+            tweet_positive_list.append(tweet)
             count_positive += 1
         elif tweet.pos == tweet.neg:
+            tweet_neutral_list.append(tweet)
             count_neutral += 1
 
 
-
+    most_positive  =  getMostInfluentialTweet(tweet_positive_list)
+    most_negative=   getMostInfluentialTweet(tweet_negative_list)
+    most_neutral=  getMostInfluentialTweet(tweet_neutral_list)
+    most_polarity=   list_records_previous_day.order_by('-polarity').first().tweet_id
+    most_subjectivity=   list_records_previous_day.order_by('-subjectivity').first().tweet_id
 
     #Create list of stemmed word 
     list_stemmed=  list_records_previous_day.values_list('stemmed_text', flat=True)
@@ -226,7 +243,12 @@ def createHourlyRecord (self,ticker):
         overall_compound =  mean_compound,
         negative_count = count_negative,
         positive_count =  count_positive,
-        neutraul_count =  count_neutral
+        neutraul_count =  count_neutral,
+        best_tweet_positive =  most_positive,
+        best_tweet_negative =  most_negative,
+        best_tweet_neutral = most_neutral,
+        best_tweet_polarity = most_polarity,
+        best_tweet_subjectivity = most_subjectivity
 
     )
     if created == True:
@@ -322,3 +344,10 @@ def clean_text(text):
     text_values  =   ' '.join(text)
 
     return text_values
+
+def getMostInfluentialTweet(tweet_list):
+
+    max_obj  = max(tweet_list, key=attrgetter('pos'))
+    tweet_id_to_return =  max_obj.tweet.id_str
+  
+    return tweet_id_to_return

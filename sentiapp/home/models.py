@@ -37,8 +37,8 @@ class TweetRecord(models.Model):
     neu =  models.DecimalField(max_digits=20, decimal_places=3)
     pos  = models.DecimalField(max_digits=20, decimal_places=3)
     compound  = models.DecimalField(max_digits=20, decimal_places=4)
-    # retweet  =  models.IntegerField(default=0)
-    # likes  =  models.IntegerField(default=0)
+    retweet  =  models.IntegerField(default=0)
+    likes  =  models.IntegerField(default=0)
     
 
     def __str__(self) -> str:
@@ -60,15 +60,15 @@ class HourlyRecord (models.Model):
     positive_count  =  models.IntegerField(default=0)
     neutraul_count  =  models.IntegerField(default=0)
 
-    # best_tweet_positive =  models.CharField(max_length=30)
+    best_tweet_positive =  models.CharField(max_length=30,null=True, default="1489021532252823553")
 
-    # best_tweet_negative =  models.CharField(max_length=30)
+    best_tweet_negative =  models.CharField(max_length=30,null=True, default="1489021532252823553")
 
-    # best_tweet_neutral =  models.CharField(max_length=30)
+    best_tweet_neutral =  models.CharField(max_length=30,null=True,default="1489021532252823553")
 
 
-    # best_tweet_subjectivity=  models.CharField(max_length=30)
-    # best_tweet_polarity=  models.CharField(max_length=30)
+    best_tweet_subjectivity=  models.CharField(max_length=30,null=True,default="1489021532252823553")
+    best_tweet_polarity=  models.CharField(max_length=30, null=True, default="1489021532252823553")
     def __str__(self) -> str:
         return str(self.tweet_date)
 
