@@ -174,31 +174,33 @@ def createHourlyRecord (self,ticker):
     count_neutral= 0
     count_positive = 0
 
-    tweet_negative_list = []
-    tweet_positive_list = []
-    tweet_neutral_list = []
+    # tweet_negative_list = []
+    # tweet_positive_list = []
+    # tweet_neutral_list = []
 
    
    
 
     for tweet in list_records_previous_day:
         if tweet.neg > tweet.pos:
-            tweet_negative_list.append(tweet)
+            # tweet_negative_list.append(tweet)
             count_negative += 1
         elif tweet.pos > tweet.neg:
-            tweet_positive_list.append(tweet)
+            # tweet_positive_list.append(tweet)
             count_positive += 1
         elif tweet.pos == tweet.neg:
-            tweet_neutral_list.append(tweet)
+            # tweet_neutral_list.append(tweet)
             count_neutral += 1
 
 
-    most_positive  =  getMostInfluentialTweet(tweet_positive_list)
-    most_negative=   getMostInfluentialTweet(tweet_negative_list)
-    most_neutral=  getMostInfluentialTweet(tweet_neutral_list)
-    most_polarity=   list_records_previous_day.order_by('-polarity').first().tweet_id
-    most_subjectivity=   list_records_previous_day.order_by('-subjectivity').first().tweet_id
+    most_positive  =   TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-pos').first().tweet_id
+    most_negative= TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-neg').first().tweet_id
+    most_neutral=   TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-neu').first().tweet_id
+    most_polarity=  TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-polarity').first().tweet_id
+    most_subjectivity=    TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-subjectivity').first().tweet_id
 
+    # print("The most positive" , most_positive)
+    # print("The polarity positive" , most_polarity)
     #Create list of stemmed word 
     list_stemmed=  list_records_previous_day.values_list('stemmed_text', flat=True)
  

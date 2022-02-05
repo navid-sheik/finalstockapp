@@ -399,6 +399,7 @@
         delimiters: ["[[", "]]"],
         data() {
             return {
+                ctx: null,
                 currentPrice: 0,
                 stockSocket: null,
                 labelsx: null,
@@ -714,8 +715,14 @@
                         ticks: {
                             source: 'data'
                         }
-                    }]
-                }
+                    }],
+
+
+
+
+                },
+
+
             };
 
 
@@ -725,7 +732,9 @@
                 this.configSentiment
             );
 
-
+            this.sentimentChart.onclick = function(evt) {
+                var activePoints = this.sentimentChart.getElementsAtEvent(evt);
+            };
 
 
 
@@ -1349,6 +1358,45 @@
             },
             get_neutral_tweets() {
                 this.tweet_list_basedOn_sentiment = this.tweet_neutral_list
+            },
+            chartClickEvent(event, array) {
+                if (typeof newArr === 'undefined') {
+                    newArr = array;
+                }
+
+                if (window.config === 'undefined' || window.config == null) {
+                    return;
+                }
+                if (event === 'undefined' || event == null) {
+                    return;
+                }
+                if (newArr === 'undefined' || newArr == null) {
+                    return;
+                }
+                if (newArr.length <= 0) {
+                    return;
+                }
+                var active = window.config.getElementAtEvent(event);
+                if (active === 'undefined' || active == null || active.length === 0) {
+                    return;
+                }
+
+                var elementIndex = active[0]._datasetIndex;
+                console.log("elementIndex: " + elementIndex + "; array length: " + newArr.length);
+
+                if (newArr[elementIndex] === 'undefined' || newArr[elementIndex] == null) {
+                    return;
+                }
+
+                var chartData = newArr[elementIndex]['_chart'].config.data;
+                var idx = newArr[elementIndex]['_index'];
+
+                var label = chartData.labels[idx];
+                var value = chartData.datasets[elementIndex].data[idx];
+                var series = chartData.datasets[elementIndex].label;
+
+                alert(series + ':' + label + ':' + value);
+
             }
 
 
