@@ -1,0 +1,262 @@
+{% extends "home/base.html" %} {% block content %}
+
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<div id="app" class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row" v-for="stock in symbols">
+
+                <div>
+
+                    <p> [[ stock.symbol]] | <span>[[ stock.name]]</span></p>
+                    <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
+                    <button @click.native="startMiningTweetsStock(stock.symbol)">Star Mining</button>
+                </div>
+
+
+            </div>
+
+
+
+
+        </div>
+        <div class="col">
+            <div class="row" v-for="stock in list_most_active">
+
+                <div>
+
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+
+                </div>
+
+
+            </div>
+
+
+
+
+        </div>
+
+        <div class="col">
+            <div class="row" v-for="stock in list_most_gainers">
+
+                <div>
+
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+
+                </div>
+
+
+            </div>
+
+
+
+
+        </div>
+
+        <div class="col">
+            <div class="row" v-for="stock in list_most_losers">
+
+                <div>
+
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+                </div>
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+    </div>
+
+    <!-- 
+    {% autoescape off %}
+    {{ tweets }}
+    {% endautoescape %} -->
+
+</div>
+
+
+
+
+{% endblock %} {% block scripts %}
+<script>
+    const chatSocket = new WebSocket(
+        'ws://' +
+        window.location.host +
+        '/ws/home/'
+
+    );
+    console.log(chatSocket)
+    chatSocket.onmessage = function(e) {
+        if (typeof e !== 'undefined') {
+            var joke = JSON.parse(e.data);
+
+
+        };
+
+
+
+
+    };
+
+    chatSocket.onclose = function(e) {
+        console.log(e.error)
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                symbols: [],
+                list_most_active: [],
+                list_most_gainers: [],
+                list_most_losers: [],
+                list_mined_stock: []
+
+
+
+
+
+
+            }
+        },
+
+        async created() {
+
+            var symbolsPath = "{%url 'home:fetch_symbols'%}"
+
+            let response = await fetch(symbolsPath);
+            if (response.ok) {
+                let data = await response.json();
+                this.symbols = data.stock_symbol
+
+                console.log(data)
+            } else {
+                alert("failed to load the list of hobbies");
+            }
+
+            this.getMostActive();
+            this.getMostGainers();
+            this.getMostLosers();
+            this.getAllTweetsMining()
+        },
+
+        methods: {
+
+            async stockHistoryDynamics() {
+                var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                histogramPath = histogramPath.replace("50000000000000", "dynamic")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+
+            },
+
+            async getMostActive() {
+
+                var stockPath = "{%url 'home:get_most_active'%}"
+
+                let response = await fetch(stockPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    this.list_most_active = data.stock_symbol
+
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+            },
+
+
+            async getMostGainers() {
+                var stockPath = "{%url 'home:get_most_gainers'%}"
+
+                let response = await fetch(stockPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    this.list_most_gainers = data.stock_symbol
+
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+            },
+
+            async getMostLosers() {
+
+                var stockPath = "{%url 'home:get_most_losers'%}"
+
+                let response = await fetch(stockPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    this.list_most_losers = data.stock_symbol
+
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+            },
+            async startMiningTweetsStock(ticker_id) {
+                let miningPath = "{%url 'home:start_mining_tweets' 2000000000000000%}".replace("2000000000000000", ticker_id.toLowerCase())
+                let response = await fetch(miningPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    // this.list_most_losers = data.stock_symbol
+
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+            },
+            async getAllTweetsMining() {
+                let allMiningPath = "{%url 'home:get_all_mining_tweets' %}";
+                let response = await fetch(allMiningPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    // this.list_most_losers = data.stock_symbol
+                    this.list_mined_stock = data
+                    console.log("mining tweets")
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+            },
+            checkIfInclude(stock) {
+                return this.list_mined_stock.includes(stock.toLowerCase())
+            }
+
+
+
+        }
+    });
+    myApp.mount('#app');
+</script>
+
+{% endblock %}
