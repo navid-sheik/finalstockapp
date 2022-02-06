@@ -9,7 +9,10 @@
     <div class="row" v-for="stock in symbols">
 
         <div>
+
             <p> [[ stock.symbol]] | <span>[[ stock.name]]</span></p>
+            <a :href="`/stock/${stock.symbol}`">View Sentiment</a>
+            <button>Star Mining</button>
         </div>
 
 
@@ -26,29 +29,29 @@
 
 {% endblock %} {% block scripts %}
 <script>
-    // const chatSocket = new WebSocket(
-    //     'ws://' +
-    //     window.location.host +
-    //     '/ws/stock/'
+    const chatSocket = new WebSocket(
+        'ws://' +
+        window.location.host +
+        '/ws/home/'
 
-    // );
-    // console.log(chatSocket)
-    // chatSocket.onmessage = function(e) {
-    //     if (typeof e !== 'undefined') {
-    //         var joke = JSON.parse(e.data);
-
-
-    //     };
+    );
+    console.log(chatSocket)
+    chatSocket.onmessage = function(e) {
+        if (typeof e !== 'undefined') {
+            var joke = JSON.parse(e.data);
 
 
+        };
 
 
-    // };
 
-    // chatSocket.onclose = function(e) {
-    //     console.log(e.error)
-    //     console.error('Chat socket closed unexpectedly');
-    // };
+
+    };
+
+    chatSocket.onclose = function(e) {
+        console.log(e.error)
+        console.error('Chat socket closed unexpectedly');
+    };
 
     let myApp = Vue.createApp({
         delimiters: ["[[", "]]"],
@@ -97,6 +100,8 @@
 
 
             },
+
+
         }
     });
     myApp.mount('#app');

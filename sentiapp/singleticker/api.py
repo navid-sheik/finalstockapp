@@ -29,7 +29,7 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 
 def fetchStockData(request, ticker_id):
     stock_ticker = ticker_id.lower()
-    url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
     # url  =  f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/chart/5d?token=pk_8295cd8fa9064272b2335b548a28d293'
 
     response = requests.get(url).json()
@@ -100,6 +100,7 @@ def getHotTweet(request):
     number_of_tweets = 100
 
     keyword = 'Tesla #tesla'
+    # keyword  = generateSearchQuery(ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='recent', lang="en").items(1)
 
@@ -138,6 +139,7 @@ def get_single_tweet(request, tweet_id):
 
 
 def getPopularTweets(request, ticker_id):
+    stock_ticker =  ticker_id.lower()
     dict  = {"tsla" : "#TSLA #tsla tsla TSLA"}
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -145,7 +147,8 @@ def getPopularTweets(request, ticker_id):
 
     number_of_tweets = 20
 
-    keyword = dict[ticker_id]
+    # keyword = dict[ticker_id]
+    keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='popular', lang="en").items(number_of_tweets)
 
@@ -176,6 +179,7 @@ def getPopularTweets(request, ticker_id):
     })
 
 def getRecentTweets(request, ticker_id):
+    stock_ticker =  ticker_id.lower()
     dict  = {"tsla" : "#TSLA #tsla tsla TSLA"}
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -183,7 +187,8 @@ def getRecentTweets(request, ticker_id):
 
     number_of_tweets = 20
 
-    keyword = dict[ticker_id]
+    # keyword = dict[ticker_id]
+    keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
 
@@ -225,6 +230,7 @@ def getSearchTwitter(request, keyword_search):
     number_of_tweets = 20
 
     keyword = keyword_search
+    
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
 
@@ -237,6 +243,7 @@ def getSearchTwitter(request, keyword_search):
 
 
 def get_tweets_based_sentiment(request, ticker_id):
+    stock_ticker =  ticker_id.lower()
     dict  = {"tsla" : "#TSLA #tsla tsla TSLA"}
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -253,7 +260,8 @@ def get_tweets_based_sentiment(request, ticker_id):
     
     number_of_tweets = 20
 
-    keyword = dict[ticker_id]
+    # keyword = dict[ticker_id]
+    keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword, since=prev, until=now,
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
 
@@ -293,7 +301,8 @@ def get_tweets_based_sentiment(request, ticker_id):
     })
 
 def getSentiment24Hours(request, ticker_id):
-    stock = get_object_or_404(StockSummary, ticker=ticker_id)
+    stock_ticker =  ticker_id.lower()
+    stock = get_object_or_404(StockSummary, ticker= stock_ticker)
     date_from = datetime.datetime.now() - datetime.timedelta(days=2)
     records = HourlyRecord.objects.filter(
         stock=stock, tweet_date__gte=date_from)
@@ -366,7 +375,8 @@ def getSentiment24Hours(request, ticker_id):
 
 
 def getSentimentTimeRange(request, ticker_id, time_range):
-    stock = get_object_or_404(StockSummary, ticker=ticker_id)
+    stock_ticker =  ticker_id.lower()
+    stock = get_object_or_404(StockSummary, ticker=stock_ticker)
     date_from = datetime.datetime.now() - datetime.timedelta(days=time_range)
     records = HourlyRecord.objects.filter(
         stock=stock, tweet_date__gte=date_from)
@@ -509,3 +519,13 @@ def cleanTweet(tweet):
     new_tweet =  new_tweet.lower()
  
     return new_tweet
+
+
+def generateSearchQuery(ticker):
+    lower  = ticker
+    uppper  = ticker.upper()
+    hashtag_lower = "#" + lower
+    hashtag_upper = "#" + uppper
+    filter  = " -filter:retweets"
+    query = lower  + " OR "  + uppper +  " OR " + hashtag_lower +  " OR " + hashtag_upper + filter
+    return query

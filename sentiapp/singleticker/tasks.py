@@ -36,7 +36,8 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 @shared_task(bind= True)
 def update_price(self, stock):
     
-    url  =  f'https://cloud.iexapis.com/stable/stock/{stock}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    stock_ticker = stock.lower()
+    url  =  f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
     # url  =  'https://cloud.iexapis.com/stable/stock/tsla/chart/5d?token=pk_8295cd8fa9064272b2335b548a28d293'
     response =  requests.get(url).json()
     joke  =  response
@@ -155,7 +156,8 @@ def update_recent_tweets(self, ticker_id):
 
     number_of_tweets = 20
 
-    keyword = dict[stock_ticker]
+    # keyword = dict[stock_ticker]
+    keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
 
@@ -268,3 +270,14 @@ def cleanTweet(tweet):
     new_tweet =  new_tweet.lower()
  
     return new_tweet
+
+
+
+def generateSearchQuery(ticker):
+    lower  = ticker
+    uppper  = ticker.upper()
+    hashtag_lower = "#" + lower
+    hashtag_upper = "#" + uppper
+    filter  = " -filter:retweets"
+    query = lower  + " OR "  + uppper +  " OR " + hashtag_lower +  " OR " + hashtag_upper + filter
+    return query

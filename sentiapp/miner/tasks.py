@@ -103,7 +103,8 @@ def mineTweets (self, ticker):
     tweets  =  []
     likes = []
     time = []
-    keyword  = dict[ticker]
+    keyword  = generateSearchQuery(ticker)
+    print(keyword)
     cursor  =  tweepy.Cursor(api.search_tweets, q= keyword, tweet_mode="extended", lang="en").items(number_of_tweets)
 
     positive = 0
@@ -354,3 +355,12 @@ def getMostInfluentialTweet(tweet_list):
     tweet_id_to_return =  max_obj.tweet.id_str
   
     return tweet_id_to_return
+
+def generateSearchQuery(ticker):
+    lower  = ticker
+    uppper  = ticker.upper()
+    hashtag_lower = "#" + lower
+    hashtag_upper = "#" + uppper
+    filter  = " -filter:retweets"
+    query = lower  + " OR "  + uppper +  " OR " + hashtag_lower +  " OR " + hashtag_upper + filter
+    return query

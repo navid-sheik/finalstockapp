@@ -51,6 +51,14 @@ CONSUMER_KEY =  "UdSOEJpvWgKUkBIuQbTo4S2kS"
 
 CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 
+
+
+
+def startMiningStoc(request, ticker_id):
+    #add to celery beat 
+    #call 
+    #return json by appending to the list in the home page of the current list of stock mining 
+    return
 def index(request):
     auth =  OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN,ACCESS_TOKEN_SECRET)
@@ -410,3 +418,4 @@ def clean_text(text):
     text_values  =   ' '.join(text)
 
     return text_values
+

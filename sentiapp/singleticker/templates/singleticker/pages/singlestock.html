@@ -462,7 +462,7 @@
         async created() {
 
             var stockPath = window.location.pathname.split('/');
-            var stockSingle = stockPath[2]
+            var stockSingle = stockPath[2].toLowerCase()
 
             this.stockSocket = new WebSocket(
                 'ws://' +
@@ -547,8 +547,8 @@
 
             //make a get request
             var pathArray = window.location.pathname.split('/');
-            console.log(pathArray[2])
-            var urlWithPath = "{%url 'singleticker:get_current_quote' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            console.log(pathArray[2].toLowerCase())
+            var urlWithPath = "{%url 'singleticker:get_current_quote' 2000000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
             let response = await fetch(urlWithPath);
             if (response.ok) {
                 let data = await response.json();
@@ -610,7 +610,7 @@
             );
             var pathArray = window.location.pathname.split('/');
 
-            var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+            var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
             histogramPath = histogramPath.replace("50000000000000", "5d")
             let responseHistogram = await fetch(histogramPath);
             if (responseHistogram.ok) {
@@ -843,7 +843,7 @@
             //GET SENTIMENT DATA
 
 
-            var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2]);
+            var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2].toLowerCase());
             let responseSentiment = await fetch(urlWithSentiment);
             if (responseSentiment.ok) {
                 let data = await responseSentiment.json();
@@ -942,7 +942,7 @@
             }
 
             //TWEETs popular list 
-            var urlWithPathTweetPopular = "{%url 'singleticker:get_popular_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            var urlWithPathTweetPopular = "{%url 'singleticker:get_popular_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
             let responseTweerListPopular = await fetch(urlWithPathTweetPopular);
             if (responseTweerListPopular.ok) {
                 let data = await responseTweerListPopular.json();
@@ -962,7 +962,7 @@
             //GET TWEETS BASED ON SENTIMENT 
 
             //TWEETs popular list 
-            var urlWithPathTweetSentimental = "{%url 'singleticker:get_sentimental_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+            var urlWithPathTweetSentimental = "{%url 'singleticker:get_sentimental_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
             let responseTweerListSentimental = await fetch(urlWithPathTweetSentimental);
             if (responseTweerListSentimental.ok) {
                 let data = await responseTweerListSentimental.json();
@@ -986,7 +986,7 @@
 
 
 
-            this.searchKywordFetching(pathArray[2])
+            this.searchKywordFetching(pathArray[2].toLowerCase())
 
 
         },
@@ -994,7 +994,7 @@
 
             async stockHistoryDynamics() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "dynamic")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1028,7 +1028,7 @@
             },
             async stockHistory5Days() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "5d")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1062,7 +1062,7 @@
             },
             async stockHistory1Month() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "1m")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1098,7 +1098,7 @@
 
             async stockHistory3Months() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "3m")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1132,7 +1132,7 @@
             },
             async stockHistory1Year() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "1y")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1167,7 +1167,7 @@
 
             async stockHistory5Years() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "5y")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1203,7 +1203,7 @@
 
             async stockHistoryMax() {
                 var pathArray = window.location.pathname.split('/');
-                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 histogramPath = histogramPath.replace("50000000000000", "max")
                 let responseHistogram = await fetch(histogramPath);
                 if (responseHistogram.ok) {
@@ -1241,7 +1241,7 @@
             async sentimentAnalysis24Hours() {
                 var pathArray = window.location.pathname.split('/');
 
-                var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2]);
+                var urlWithSentiment = "{%url 'singleticker:get_24_hours_sentiment' 2000000000000000 %}".replace("2000000000000000", pathArray[2].toLowerCase());
                 let responseSentiment = await fetch(urlWithSentiment);
 
                 if (responseSentiment.ok) {
@@ -1279,7 +1279,7 @@
             async sentimentAnalysisRange(time_range) {
                 var pathArray = window.location.pathname.split('/');
 
-                var urlWithSentiment = "{%url 'singleticker:get_time_range_sentiment' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2]);
+                var urlWithSentiment = "{%url 'singleticker:get_time_range_sentiment' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase());
                 var urlWithSentimeWithDaterange = urlWithSentiment.replace('50000000000000', time_range)
                 let responseSentiment = await fetch(urlWithSentimeWithDaterange);
                 if (responseSentiment.ok) {
@@ -1371,7 +1371,7 @@
 
             async getRecentTweets() {
                 var pathArray = window.location.pathname.split('/');
-                var urlWithPathTweetPopular = "{%url 'singleticker:get_recent_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2])
+                var urlWithPathTweetPopular = "{%url 'singleticker:get_recent_tweets' 2000000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
                 let responseTweerListPopular = await fetch(urlWithPathTweetPopular);
                 if (responseTweerListPopular.ok) {
                     let data = await responseTweerListPopular.json();
