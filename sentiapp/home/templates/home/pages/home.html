@@ -118,10 +118,13 @@
         data() {
             return {
                 symbols: [],
+                string_symbolys_fetch: "",
+                prices_symbols: [],
                 list_most_active: [],
                 list_most_gainers: [],
                 list_most_losers: [],
-                list_mined_stock: []
+                list_mined_stock: [],
+
 
 
 
@@ -133,18 +136,7 @@
 
         async created() {
 
-            var symbolsPath = "{%url 'home:fetch_symbols'%}"
-
-            let response = await fetch(symbolsPath);
-            if (response.ok) {
-                let data = await response.json();
-                this.symbols = data.stock_symbol
-
-                console.log(data)
-            } else {
-                alert("failed to load the list of hobbies");
-            }
-
+            this.get_symbols()
             this.getMostActive();
             this.getMostGainers();
             this.getMostLosers();
@@ -153,6 +145,28 @@
 
         methods: {
 
+
+            async get_symbols() {
+                var symbolsPath = "{%url 'home:fetch_symbols'%}"
+
+                let response = await fetch(symbolsPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    this.symbols = data.stock_symbol
+                    this.symbols.forEach(element => this.string_symbolys_fetch += element.symbol.toLowerCase() + ",");
+
+
+                    console.log(data)
+                    console.log(this.string_symbolys_fetch)
+                    this.getBatchPrices(this.string_symbolys_fetch)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+
+
+
+            },
             async stockHistoryDynamics() {
                 var pathArray = window.location.pathname.split('/');
                 var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2])
@@ -243,6 +257,23 @@
                     this.list_mined_stock = data.tasks
 
                     console.log("mining tweets")
+                    console.log(data)
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+            },
+
+            async getBatchPrices(stocks) {
+                let batchPath = "{%url 'home:get_batch_stock_prices' 2000000000000000%}".replace("2000000000000000", stocks.toLowerCase());
+                let response = await fetch(batchPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    // this.list_most_losers = data.stock_symbol
+                    console.log(Object.keys(data.stock_prices).length)
+                    this.prices_symbols = data.stock_prices
+
+                    console.log("batch  tweets")
                     console.log(data)
                 } else {
                     alert("failed to load the list of hobbies");
