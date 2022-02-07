@@ -98,7 +98,18 @@
     console.log(chatSocket)
     chatSocket.onmessage = function(e) {
         if (typeof e !== 'undefined') {
-            var joke = JSON.parse(e.data);
+            var response = JSON.parse(e.data);
+            console.log(response)
+            if (response.hasOwnProperty('most_active')) {
+                console.log(response.most_active)
+                this.most_active = response.most_active
+            } else if (response.hasOwnProperty('most_gainers')) {
+                console.log(response.most_gainers)
+                this.most_gainers = response.most_gainers
+            } else if (response.hasOwnProperty('most_losers')) {
+                console.log(response.most_losers)
+                this.most_losers = response.most_losers
+            }
 
 
         };

@@ -20,24 +20,61 @@ import json
 
 class HomePageConsumer(AsyncWebsocketConsumer):
 
-    # @sync_to_async
-    # def addToCeleryBeatStockInfo(self, ticker):
-    #     name =   "every-30-seconds" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         # args =  json.loads(task.args)
-    #         # args =  args[0]
-    #         # if ticker not in args:
-    #         #     args.append(ticker)
-    #         task.args =  json.dumps([ticker])
-    #         task.enabled = True
+    @sync_to_async
+    def addToCeleryBeatMostActivateStocks(self):
+        name =   "every-30-seconds" +  "-" + "most-active"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            # args =  json.loads(task.args)
+            # args =  args[0]
+            # if ticker not in args:
+            #     args.append(ticker)
+       
+            task.enabled = True
             
-    #         task.save()
-    #     else:
-    #         schedule, created  =  IntervalSchedule.objects.get_or_create(every = 30, period =  IntervalSchedule.SECONDS)
-    #         print(ticker)
-    #         task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_price", args =  json.dumps([ticker]))
+            task.save()
+        else:
+            schedule, created  =  IntervalSchedule.objects.get_or_create(every = 30, period =  IntervalSchedule.SECONDS)
+            task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_active")
+
+
+    @sync_to_async
+    def addToCeleryBeatMostGainersStocks(self):
+        name =   "every-25-seconds" +  "-" + "most-gainers"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            # args =  json.loads(task.args)
+            # args =  args[0]
+            # if ticker not in args:
+            #     args.append(ticker)
+       
+            task.enabled = True
+            
+            task.save()
+        else:
+            schedule, created  =  IntervalSchedule.objects.get_or_create(every = 25, period =  IntervalSchedule.SECONDS)
+            task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_gainers")
+
+
+    @sync_to_async
+    def addToCeleryBeatMostLosersStocks(self):
+        name =   "every-35-seconds" +  "-" + "most-losers"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            # args =  json.loads(task.args)
+            # args =  args[0]
+            # if ticker not in args:
+            #     args.append(ticker)
+       
+            task.enabled = True
+            
+            task.save()
+        else:
+            schedule, created  =  IntervalSchedule.objects.get_or_create(every = 35, period =  IntervalSchedule.SECONDS)
+            task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_losers")
 
 
     # @sync_to_async
@@ -107,7 +144,9 @@ class HomePageConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(self.group_name,self.channel_name)
 
-
+        await  self.addToCeleryBeatMostActivateStocks()
+        await  self.addToCeleryBeatMostGainersStocks()
+        await  self.addToCeleryBeatMostLosersStocks()
         # await   self.addToCeleryBeatStockInfo(self.room_name)
         # await   self.addToCeleryBeatStockIGraphInfo(self.room_name)
         # await   self.addToCeleryBeatStockISentimentInfo(self.room_name)
@@ -119,14 +158,33 @@ class HomePageConsumer(AsyncWebsocketConsumer):
 
 
 
-    # @sync_to_async
-    # def stop_celeryBeatStockInfo(self, ticker):
-    #     name =   "every-30-seconds" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         task.enabled = False
-    #         task.save()
+    @sync_to_async
+    def stop_celeryBeatMostActive(self, ticker):
+        name =   "every-30-seconds" +  "-" + "most-active"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            task.enabled = False
+            task.save()
+
+    @sync_to_async
+    def stop_celeryBeatMostGainers(self, ticker):
+        name =   "every-25-seconds" +  "-" + "most-gainers"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            task.enabled = False
+            task.save()
+
+    @sync_to_async
+    def stop_celeryBeatMostLosers(self, ticker):
+        name =   "every-35-seconds" +  "-" + "most-losers"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            task.enabled = False
+            task.save()
+
 
     # @sync_to_async
     # def stop_celeryBeatStockGraphInfo(self, ticker):
@@ -162,6 +220,9 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         # await self.stop_celeryBeatStockGraphInfo(self.room_name)
         # await self.stop_celeryBeatStockSentimentInfo(self.room_name)
         # await self.stop_celeryBeatTweetsRecent(self.room_name)
+        await self.stop_celeryBeatMostActive()
+        await self.stop_celeryBeatMostGainers()
+        await self.stop_celeryBeatMostLosers()
         await self.channel_layer.group_discard(self.group_name,self.channel_name)
         
 
@@ -178,10 +239,22 @@ class HomePageConsumer(AsyncWebsocketConsumer):
 
 
    # Receive message from room group
-    async def stock_update(self, event):
+    async def stock_update_most_active(self, event):
         message =  event['message']
        
-        await self.send(text_data=json.dumps( message ))
+        await self.send(text_data=json.dumps( {'most_active' :message} ))
+
+    # Receive message from room group
+    async def get_most_gainers(self, event):
+        message =  event['message']
+       
+        await self.send(text_data=json.dumps( {'most_gainers' :message} ))
+
+    # Receive message from room group
+    async def stock_update_most_losers(self, event):
+        message =  event['message']
+       
+        await self.send(text_data=json.dumps( {'most_losers' :message} ))
 
    
    

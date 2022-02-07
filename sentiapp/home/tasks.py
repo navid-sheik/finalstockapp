@@ -1,3 +1,4 @@
+import asyncio
 import imp
 from urllib import request
 from celery import shared_task
@@ -257,6 +258,57 @@ def createHourlyRecord (self,ticker):
     )
     if created == True:
         print("Successfucl")
+
+
+
+
+
+@shared_task(bind=True)
+def get_most_active(self):
+    # stock_ticker = ticker_id.lower()
+    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
+
+    url = 'https://cloud.iexapis.com/stable/stock/market/list/mostactive?token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    print(response)
+    #send data to group
+    name_room  = 'stock_%s' % "home"
+    loop =  asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'stock_update_most_active', 'message' :  response}))
+
+
+@shared_task(bind=True)
+def get_most_gainers(self):
+    # stock_ticker = ticker_id.lower()
+    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
+
+    url = 'https://cloud.iexapis.com/stable/stock/market/list/gainers?token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    print(response)
+    #send data to group
+    name_room  = 'stock_%s' % "home"
+    loop =  asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'stock_update_most_gainers', 'message' :  response}))
+
+
+@shared_task(bind=True)
+def get_most_losers(self):
+    # stock_ticker = ticker_id.lower()
+    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
+
+    url = 'https://cloud.iexapis.com/stable/stock/market/list/losers?token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    print(response)
+    #send data to group
+    name_room  = 'stock_%s' % "home"
+    loop =  asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'stock_update_most_losers', 'message' :  response}))
 
 
 
