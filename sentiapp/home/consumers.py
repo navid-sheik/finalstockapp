@@ -159,7 +159,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
 
 
     @sync_to_async
-    def stop_celeryBeatMostActive(self, ticker):
+    def stop_celeryBeatMostActive(self):
         name =   "every-30-seconds" +  "-" + "most-active"
         task  =  PeriodicTask.objects.filter(name =name)
         if len(task)>0:
@@ -168,7 +168,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             task.save()
 
     @sync_to_async
-    def stop_celeryBeatMostGainers(self, ticker):
+    def stop_celeryBeatMostGainers(self):
         name =   "every-25-seconds" +  "-" + "most-gainers"
         task  =  PeriodicTask.objects.filter(name =name)
         if len(task)>0:
@@ -177,7 +177,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             task.save()
 
     @sync_to_async
-    def stop_celeryBeatMostLosers(self, ticker):
+    def stop_celeryBeatMostLosers(self):
         name =   "every-35-seconds" +  "-" + "most-losers"
         task  =  PeriodicTask.objects.filter(name =name)
         if len(task)>0:
@@ -245,7 +245,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps( {'most_active' :message} ))
 
     # Receive message from room group
-    async def get_most_gainers(self, event):
+    async def stock_update_most_gainers(self, event):
         message =  event['message']
        
         await self.send(text_data=json.dumps( {'most_gainers' :message} ))

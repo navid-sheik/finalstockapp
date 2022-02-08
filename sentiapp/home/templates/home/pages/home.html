@@ -8,11 +8,12 @@
 <div id="app" class="container">
     <div class="row">
         <div class="col">
-            <div class="row" v-for="stock in symbols">
+            <div class="row" v-for="(stock, index) in symbols">
 
                 <div>
 
-                    <p> [[ stock.symbol]] | <span>[[ stock.name]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.name]]</span> | <span v-if="mapped_stocks_prices.length != 0">[[ mapped_stocks_prices[index].change   ]]</span>
+                    </p>
                     <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
                     <button @click.native="startMiningTweetsStock(stock.symbol)" v-else>Star Mining</button>
                 </div>
@@ -29,7 +30,7 @@
 
                 <div>
 
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
 
                 </div>
 
@@ -46,7 +47,7 @@
 
                 <div>
 
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
 
                 </div>
 
@@ -63,7 +64,7 @@
 
                 <div>
 
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.change]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
                 </div>
 
 
@@ -75,8 +76,34 @@
         </div>
 
 
+
     </div>
 
+
+    <div class="row">
+        <div class="card-group" v-for="item in news">
+
+            <p> [[item]]</p>
+
+        </div>
+
+    </div>
+
+    <!-- <div class="row" v-if="news.lenght > 0">
+        <div class="card-group" v-for="single in news">
+            <div class="card">
+                <img class="card-img-top" src="" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">[[ single.headline ]]</h5>
+                    <p class="card-text"> [[ single.summary]]</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">[[ single.datetime]]</small>
+                </div>
+            </div>
+
+        </div>
+    </div> -->
     <!-- 
     {% autoescape off %}
     {{ tweets }}
@@ -135,6 +162,9 @@
                 list_most_gainers: [],
                 list_most_losers: [],
                 list_mined_stock: [],
+                mapped_stocks_prices: [],
+                news: [],
+
 
 
 
@@ -285,7 +315,13 @@
                     this.prices_symbols = data.stock_prices
 
                     console.log("batch  tweets")
-                    console.log(data)
+                    this.symbols.forEach(element => this.mapped_stocks_prices.push((this.prices_symbols[element.symbol].quote)));
+                    this.symbols.forEach(element => this.news.push((this.prices_symbols[element.symbol].news[0])));
+                    console.log(this.prices_symbols['AAPL'])
+                    this.shuffle(this.news)
+
+                    console.log(this.mapped_stocks_prices)
+                    console.log(this.news[0].headline)
                 } else {
                     alert("failed to load the list of hobbies");
                 }
@@ -297,6 +333,26 @@
 
 
                 return false
+            },
+
+            shuffle(array) {
+                let currentIndex = array.length,
+                    randomIndex;
+
+                // While there remain elements to shuffle...
+                while (currentIndex != 0) {
+
+                    // Pick a remaining element...
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+
+                    // And swap it with the current element.
+                    [array[currentIndex], array[randomIndex]] = [
+                        array[randomIndex], array[currentIndex]
+                    ];
+                }
+
+                return array;
             }
 
 

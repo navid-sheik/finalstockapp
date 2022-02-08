@@ -101,3 +101,13 @@ def getNameOfTasks (queryset):
         array.append(splitted_name[-1])
     return array
 
+
+def read_json_objects(data):
+    decoder = json.JSONDecoder()
+    offset = 0
+
+    while offset < len(data):
+        item = decoder.raw_decode(data[offset:])
+
+        yield item[0]
+        offset += item[1]
