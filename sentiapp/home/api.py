@@ -53,7 +53,15 @@ def get_most_losers(request):
 def getBatchStockPrices(request, stocks):
 
     # url = 'https://financialmodelingprep.com/api/v3/quote/AAPL,FB,GOOG?apikey=c08b159c95da11912bebae65b95c0917'
-    url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={stocks}&types=quote,news&last=10&token=pk_8295cd8fa9064272b2335b548a28d293'
+    url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={stocks}&types=quote&token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    # print(response)
+    return JsonResponse({'stock_prices': response})
+
+def getBatchStockNews(request, stocks):
+
+    # url = 'https://financialmodelingprep.com/api/v3/quote/AAPL,FB,GOOG?apikey=c08b159c95da11912bebae65b95c0917'
+    url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={stocks}&types=news&last=1&token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
     # print(response)
     return JsonResponse({'stock_prices': response})

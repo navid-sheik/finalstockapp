@@ -76,6 +76,24 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             schedule, created  =  IntervalSchedule.objects.get_or_create(every = 35, period =  IntervalSchedule.SECONDS)
             task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_losers")
 
+    @sync_to_async
+    def addToCeleryBeatMostNasdaqStocks(self):
+        name =   "every-30-seconds" +  "-" + "nasdaq"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            # args =  json.loads(task.args)
+            # args =  args[0]
+            # if ticker not in args:
+            #     args.append(ticker)
+       
+            task.enabled = True
+            
+            task.save()
+        else:
+            schedule, created  =  IntervalSchedule.objects.get_or_create(every = 30, period =  IntervalSchedule.SECONDS)
+            task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_nasdaq")
+
 
     # @sync_to_async
     # def addToCeleryBeatStockIGraphInfo(self, ticker):
@@ -147,6 +165,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         await  self.addToCeleryBeatMostActivateStocks()
         await  self.addToCeleryBeatMostGainersStocks()
         await  self.addToCeleryBeatMostLosersStocks()
+        await  self.addToCeleryBeatMostNasdaqStocks()
         # await   self.addToCeleryBeatStockInfo(self.room_name)
         # await   self.addToCeleryBeatStockIGraphInfo(self.room_name)
         # await   self.addToCeleryBeatStockISentimentInfo(self.room_name)
@@ -185,6 +204,14 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             task.enabled = False
             task.save()
 
+    @sync_to_async
+    def stop_celeryBeatNasdaq(self):
+        name =   "every-30-seconds" +  "-" + "nasdaq"
+        task  =  PeriodicTask.objects.filter(name =name)
+        if len(task)>0:
+            task =  task.first()
+            task.enabled = False
+            task.save()
 
     # @sync_to_async
     # def stop_celeryBeatStockGraphInfo(self, ticker):
@@ -223,6 +250,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         await self.stop_celeryBeatMostActive()
         await self.stop_celeryBeatMostGainers()
         await self.stop_celeryBeatMostLosers()
+        await self.stop_celeryBeatNasdaq()
         await self.channel_layer.group_discard(self.group_name,self.channel_name)
         
 
@@ -255,6 +283,12 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         message =  event['message']
        
         await self.send(text_data=json.dumps( {'most_losers' :message} ))
+
+     # Receive message from room group
+    async def stock_update_nasdaq_price(self, event):
+        message =  event['message']
+       
+        await self.send(text_data=json.dumps( {'nasdaq' :message} ))
 
    
    

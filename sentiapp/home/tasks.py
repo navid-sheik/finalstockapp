@@ -311,6 +311,23 @@ def get_most_losers(self):
     loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'stock_update_most_losers', 'message' :  response}))
 
 
+@shared_task(bind=True)
+def get_most_nasdaq(self):
+    # stock_ticker = ticker_id.lower()
+    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
+    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
+    stocks = 'atvi,adbe,adp,abnb,algn,googl,goog,amzn,amd,aep,amgn,adi,anss,aapl,amat,team,adsk,bidu,biib,bkng,avgo,cdns,chtr,ctas,csco,ctsh,cmcsa,ceg,cprt,cost,crwd,csx,ddog,dxcm,docu,dltr,ebay,ea,exc,fast,fisv,ftnt,gild,hon,idxx,ilmn,intc,intu,isrg,kdp,klac,khc,lrcx,lcid,lulu,mar,mrvl,mtch,meli,fb,mchp,mu,msft,mrna,mdlz,mnst,nflx,nvda,nxpi,orly,okta,odfl,pcar,panw,payx,pypl,pep,pdd,qcom,regn,rost,sgen,siri,swks,splk,sbux,snps,tmus,tsla,txn,vrsn,vrsk,vrtx,wba,wday,xel,xlnx,zm,zs,'
+    url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={stocks}&types=quote&token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    print(response)
+    #send data to group
+    name_room  = 'stock_%s' % "home"
+    loop =  asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(channel_layer.group_send(name_room, {'type': 'stock_update_nasdaq_price', 'message' :  response}))
+
+
+
 
 def mean(list_sentiment):
     return statistics.mean(list_sentiment) 
