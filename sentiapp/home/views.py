@@ -53,6 +53,10 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 
 
 
+def home_page(request):
+    return render(request, 'home/pages/home.html',{})
+
+
 
 def startMiningStoc(request, ticker_id):
     #add to celery beat 

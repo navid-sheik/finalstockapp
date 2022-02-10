@@ -7,9 +7,8 @@ from singleticker.views import singleStockView
 
 app_name =  'home'
 urlpatterns = [
-    path('', views.index, name="home"),
+    path('', views.home_page, name="home"),
     path ('background/',views.test, name =  "background" ),
-
     path ('stock/<str:ticker_id>',singleStockView, name =  "single" ),
     path ('api/get_symbol/',fetch_symbol, name =  "fetch_symbols" ),
     path ('api/get_most_active/',get_most_active, name =  "get_most_active" ),

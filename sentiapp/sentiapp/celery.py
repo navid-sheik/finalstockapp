@@ -21,29 +21,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 #Celery beet settings
 app.conf.beat_schedule = {
-    # 'every-60-seconds-tsla-tweets':{
-    #     'task': 'miner.tasks.mineTweets',
-    #     'schedule' : 60,
-    #     'args': ('tsla',),
-    # },
-    # 'every-hour-create-record-tsla':{
-    #     'task': 'miner.tasks.createHourlyRecord',
-    #     'schedule' : 300,
-    #     # 'schedule' : crontab(minute='0', hour='*/1'),
-    #     'args': ('tsla',),
-    # },
-    # 'every-10-second-jokes':{
-    #     'task': 'miner.tasks.get_stock_info',
-    #     'schedule' : 60,
-    # }
-    
 }
-
-
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
-
 
 @app.task(bind=True)
 def debug_task(self):

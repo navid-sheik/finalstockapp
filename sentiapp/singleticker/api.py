@@ -30,38 +30,20 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 def fetchStockData(request, ticker_id):
     stock_ticker = ticker_id.lower()
     url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url  =  f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/chart/5d?token=pk_8295cd8fa9064272b2335b548a28d293'
-
     response = requests.get(url).json()
-    print(response)
     return JsonResponse({'stock_quote': response})
 
 
 def fetchStockDataHistory(request, ticker_id, timestamp):
     stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
     url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/chart/{timestamp}?token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
-    print(response)
     return JsonResponse({'stock_quote': response})
 
 
 
 
 def get_single_tweet_sentiment(request, sentiment_type,record_id):
-    # stock = get_object_or_404(StockSummary, ticker=ticker_id)
-
-    dictornary  = {
-        "positive" : "overall_pos",
-        "negative" : "overall_neg",
-        "neutral" : "overall_neu",
-        "compound" :  "overall_compound",
-        "subjectivity" :  "overall_subjectivity",
-        "polarity"  : "overall_polarity",
-
-
-    }
-    # sentiment_type   = dictornary[sentiment_type.lower()]
 
     record  =  HourlyRecord.objects.filter(pk=record_id).first()
     tweet_id =  ""
@@ -92,13 +74,10 @@ def get_single_tweet_sentiment(request, sentiment_type,record_id):
 
 
 def getHotTweet(request):
-
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-
     number_of_tweets = 100
-
     keyword = 'Tesla #tesla'
     # keyword  = generateSearchQuery(ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
@@ -106,14 +85,7 @@ def getHotTweet(request):
 
     searched_tweets = [status._json for status in cursor]
     json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    print(json_string)
     return JsonResponse({'tweet': json_string})
-
-
-
-
-
 
 
 def get_single_tweet(request, tweet_id):
@@ -121,22 +93,9 @@ def get_single_tweet(request, tweet_id):
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-
-
     tweet = api.get_status(tweet_id)
     return JsonResponse({'single_tweet' :  json.dumps(tweet)})
-    # number_of_tweets = 100
-
-    # keyword = 'Tesla #tesla'
-    # cursor = tweepy.Cursor(api.search_tweets, q=keyword,
-    #                        tweet_mode="extended", result_type='recent', lang="en").items(1)
-
-    # searched_tweets = [status._json for status in cursor]
-    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    # print("The json string")
-    # print(json_string)
-    # return JsonResponse({'tweet': json_string})
-
+ 
 
 def getPopularTweets(request, ticker_id):
     stock_ticker =  ticker_id.lower()
@@ -164,14 +123,7 @@ def getPopularTweets(request, ticker_id):
         mytweet  =   tweet._json
         mytweet['sentiment']  =  map_sentimet['text_sentiment']
         tweets_sentiments.append(mytweet)
-      
-
-
-    # searched_tweets = [status._json for status in cursor]
-    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    
-    print(tweets_sentiments)
+ 
     return JsonResponse({'tweets': json.dumps( tweets_sentiments),
                          
     
@@ -184,9 +136,7 @@ def getRecentTweets(request, ticker_id):
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-
     number_of_tweets = 20
-
     # keyword = dict[ticker_id]
     keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
@@ -204,21 +154,8 @@ def getRecentTweets(request, ticker_id):
         mytweet  =   tweet._json
         mytweet['sentiment']  =  map_sentimet['text_sentiment']
         tweets_sentiments.append(mytweet)
-      
 
-
-    # searched_tweets = [status._json for status in cursor]
-    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    
-    print(tweets_sentiments)
-    return JsonResponse({'tweets': json.dumps( tweets_sentiments),
-                         
-    
-    
-    })
-
-
+    return JsonResponse({'tweets': json.dumps( tweets_sentiments),})
 
 
 def getSearchTwitter(request, keyword_search):
@@ -235,10 +172,6 @@ def getSearchTwitter(request, keyword_search):
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
 
     searched_tweets = [status._json for status in cursor]
-    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    
-    print(searched_tweets)
     return JsonResponse({'tweets': json.dumps( searched_tweets)})
 
 
@@ -282,33 +215,17 @@ def get_tweets_based_sentiment(request, ticker_id):
             negative_list.append(mytweet)
         else:
             neutral_list.append(mytweet)
-        # mytweet  =   tweet._json
-        # mytweet['sentiment']  =  map_sentimet['text_sentiment']
-        # tweets_sentiments.append(mytweet)
-      
 
-
-    # searched_tweets = [status._json for status in cursor]
-    # json_string = [json.dumps(json_obj) for json_obj in searched_tweets]
-    print("The json string")
-    
-    print(tweets_sentiments)
     return JsonResponse({'negatives': json.dumps( negative_list),
                          'positives' :  json.dumps(positive_list),
-                         'neutrals' :   json.dumps(neutral_list)
-    
-    
-    })
+                         'neutrals' :   json.dumps(neutral_list)})
 
 def getSentiment24Hours(request, ticker_id):
     stock_ticker =  ticker_id.lower()
     stock = get_object_or_404(StockSummary, ticker= stock_ticker)
     date_from = datetime.datetime.now() - datetime.timedelta(days=2)
     records = HourlyRecord.objects.filter(
-        stock=stock, tweet_date__gte=date_from)
-    print("We have found this record  ",  records.count)
-
-
+    stock=stock, tweet_date__gte=date_from)
     
     list_ids = records.values_list('id', flat=True)
     fetched_date = datetime.datetime.now()
@@ -380,7 +297,6 @@ def getSentimentTimeRange(request, ticker_id, time_range):
     date_from = datetime.datetime.now() - datetime.timedelta(days=time_range)
     records = HourlyRecord.objects.filter(
         stock=stock, tweet_date__gte=date_from)
-    print("We have found this record  ",  records.count)
 
 
     list_ids = records.values_list('id', flat=True)
@@ -449,7 +365,7 @@ def getSentimentTimeRange(request, ticker_id, time_range):
 
 
 
-
+#HELPER METHOD
 def mean(list_sentiment):
     return round(statistics.mean(list_sentiment) , 2)
 
@@ -486,16 +402,6 @@ def perfomSentimentAnalysis (tweet):
     return sentiment
 
 def cleanTweet(tweet):
-    
-    #remove placeholder video 
-    # new_tweet =  re.sub(r'{link}', '', tweet)
-
-    # new_tweet = re.sub(r"\[video\]", '', new_tweet)
-
-    # #not letter , punction , emoji , hash , non  english 
-    # new_tweet =  re.sub(r"[^a-z\s\(\-:\)\\\/\];='#]", '', new_tweet)
-
-
     #twitter mention 
     new_tweet =  re.sub(r'@mention', '', tweet)
 
@@ -519,7 +425,6 @@ def cleanTweet(tweet):
     new_tweet =  new_tweet.lower()
  
     return new_tweet
-
 
 def generateSearchQuery(ticker):
     lower  = ticker
