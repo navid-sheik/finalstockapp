@@ -38,7 +38,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             schedule, created  =  IntervalSchedule.objects.get_or_create(every = 30, period =  IntervalSchedule.SECONDS)
             task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_active")
 
-
+            
     @sync_to_async
     def addToCeleryBeatMostGainersStocks(self):
         name =   "every-25-seconds" +  "-" + "most-gainers"
@@ -57,20 +57,14 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             schedule, created  =  IntervalSchedule.objects.get_or_create(every = 25, period =  IntervalSchedule.SECONDS)
             task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_gainers")
 
-
     @sync_to_async
     def addToCeleryBeatMostLosersStocks(self):
         name =   "every-35-seconds" +  "-" + "most-losers"
         task  =  PeriodicTask.objects.filter(name =name)
         if len(task)>0:
             task =  task.first()
-            # args =  json.loads(task.args)
-            # args =  args[0]
-            # if ticker not in args:
-            #     args.append(ticker)
-       
+
             task.enabled = True
-            
             task.save()
         else:
             schedule, created  =  IntervalSchedule.objects.get_or_create(every = 35, period =  IntervalSchedule.SECONDS)
@@ -81,101 +75,21 @@ class HomePageConsumer(AsyncWebsocketConsumer):
         name =   "every-30-seconds" +  "-" + "nasdaq"
         task  =  PeriodicTask.objects.filter(name =name)
         if len(task)>0:
-            task =  task.first()
-            # args =  json.loads(task.args)
-            # args =  args[0]
-            # if ticker not in args:
-            #     args.append(ticker)
-       
+            task =  task.first()       
             task.enabled = True
-            
             task.save()
         else:
             schedule, created  =  IntervalSchedule.objects.get_or_create(every = 30, period =  IntervalSchedule.SECONDS)
             task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "home.tasks.get_most_nasdaq")
 
-
-    # @sync_to_async
-    # def addToCeleryBeatStockIGraphInfo(self, ticker):
-    #     name =   "every-121-seconds" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         # args =  json.loads(task.args)
-    #         # args =  args[0]
-    #         # if ticker not in args:
-    #         #     args.append(ticker)
-    #         task.args =  json.dumps([ticker])
-    #         task.enabled = True
-            
-    #         task.save()
-    #     else:
-    #         schedule, created  =  IntervalSchedule.objects.get_or_create(every = 121, period =  IntervalSchedule.SECONDS)
-    #         print(ticker)
-    #         task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_24_hours_graph", args =  json.dumps([ticker]))
-
-
-    # @sync_to_async
-    # def addToCeleryBeatStockISentimentInfo(self, ticker):
-    #     name =   "every-121-seconds-sentiment" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         # args =  json.loads(task.args)
-    #         # args =  args[0]
-    #         # if ticker not in args:
-    #         #     args.append(ticker)
-    #         task.args =  json.dumps([ticker])
-    #         task.enabled = True
-            
-    #         task.save()
-    #     else:
-    #         schedule, created  =  IntervalSchedule.objects.get_or_create(every = 121, period =  IntervalSchedule.SECONDS)
-    #         print(ticker)
-    #         task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_sentiment_24Hours", args =  json.dumps([ticker]))
-
-
-    # @sync_to_async
-    # def addToCeleryBeatRecentTweets(self, ticker):
-    #     name =   "every-60-seconds-recent=tweets" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         # args =  json.loads(task.args)
-    #         # args =  args[0]
-    #         # if ticker not in args:
-    #         #     args.append(ticker)
-    #         task.args =  json.dumps([ticker])
-    #         task.enabled = True
-            
-    #         task.save()
-    #     else:
-    #         schedule, created  =  IntervalSchedule.objects.get_or_create(every = 60, period =  IntervalSchedule.SECONDS)
-    #         print(ticker)
-    #         task  = PeriodicTask.objects.create(interval  =  schedule, name = name, task = "singleticker.tasks.update_recent_tweets", args =  json.dumps([ticker]))
-
-
-
     async def connect(self):
-        # self.room_name = self.scope['url_route']['kwargs']['stock_name']
         self.group_name = 'stock_%s' % "home"
-
         await self.channel_layer.group_add(self.group_name,self.channel_name)
-
         await  self.addToCeleryBeatMostActivateStocks()
         await  self.addToCeleryBeatMostGainersStocks()
         await  self.addToCeleryBeatMostLosersStocks()
         await  self.addToCeleryBeatMostNasdaqStocks()
-        # await   self.addToCeleryBeatStockInfo(self.room_name)
-        # await   self.addToCeleryBeatStockIGraphInfo(self.room_name)
-        # await   self.addToCeleryBeatStockISentimentInfo(self.room_name)
-        # await   self.addToCeleryBeatRecentTweets(self.room_name)
-
         await self.accept()
-
-
-
-
 
     @sync_to_async
     def stop_celeryBeatMostActive(self):
@@ -213,40 +127,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
             task.enabled = False
             task.save()
 
-    # @sync_to_async
-    # def stop_celeryBeatStockGraphInfo(self, ticker):
-    #     name =   "every-121-seconds" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         task.enabled = False
-    #         task.save()
-
-    # @sync_to_async
-    # def stop_celeryBeatStockSentimentInfo(self, ticker):
-    #     name =   "every-121-seconds-sentiment" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         task.enabled = False
-    #         task.save()
-
-    # @sync_to_async
-    # def stop_celeryBeatTweetsRecent(self, ticker):
-    #     name =   "every-60-seconds-recent=tweets" +  "-" + ticker
-    #     task  =  PeriodicTask.objects.filter(name =name)
-    #     if len(task)>0:
-    #         task =  task.first()
-    #         task.enabled = False
-    #         task.save()
-
-
-
     async def disconnect(self, close_code):
-        # await self.stop_celeryBeatStockInfo(self.room_name)
-        # await self.stop_celeryBeatStockGraphInfo(self.room_name)
-        # await self.stop_celeryBeatStockSentimentInfo(self.room_name)
-        # await self.stop_celeryBeatTweetsRecent(self.room_name)
         await self.stop_celeryBeatMostActive()
         await self.stop_celeryBeatMostGainers()
         await self.stop_celeryBeatMostLosers()
@@ -287,7 +168,7 @@ class HomePageConsumer(AsyncWebsocketConsumer):
      # Receive message from room group
     async def stock_update_nasdaq_price(self, event):
         message =  event['message']
-       
+
         await self.send(text_data=json.dumps( {'nasdaq' :message} ))
 
    

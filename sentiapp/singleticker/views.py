@@ -9,7 +9,6 @@ from django_celery_beat.models import  HOURS, MINUTES, PeriodicTask, CrontabSche
 def singleStockView(request, ticker_id):
     print(ticker_id)
     context  = {}
-   
     return render(request, 'singleticker/pages/singlestock.html', context)
     
 

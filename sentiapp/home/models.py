@@ -3,9 +3,6 @@ from pickle import TRUE
 from pyexpat import model
 from unicodedata import name
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.db.models.base import Model
 from django.db.models.fields import CharField, DateTimeField, IntegerField
 
@@ -17,11 +14,6 @@ class StockSummary(models.Model):
 
     def __str__(self) -> str:
         return self.ticker
-
-
-
-
-
 
 class TweetRecord(models.Model):
     stock = models.ForeignKey(StockSummary, on_delete=models.CASCADE, default="TSL")
@@ -43,7 +35,6 @@ class TweetRecord(models.Model):
 
     def __str__(self) -> str:
         return self.tweet_id
-
 
 class HourlyRecord (models.Model):
     stock = models.ForeignKey(StockSummary, on_delete=models.CASCADE, default="TSL")
@@ -72,7 +63,6 @@ class HourlyRecord (models.Model):
     best_tweet_compound=  models.CharField(max_length=30,null=True, default="1489021532252823553")
     def __str__(self) -> str:
         return str(self.tweet_date)
-
 
 class DailyRecord (models.Model):
     stock = models.ForeignKey(StockSummary, on_delete=models.CASCADE, default="TSL")

@@ -35,15 +35,11 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 
 @shared_task(bind= True)
 def update_price(self, stock):
-    
     stock_ticker = stock.lower()
     url  =  f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url  =  'https://cloud.iexapis.com/stable/stock/tsla/chart/5d?token=pk_8295cd8fa9064272b2335b548a28d293'
     response =  requests.get(url).json()
     joke  =  response
     print(joke)
-
-    # print(singleticker.routing.websocket_urlpatterns)
 
     #send data to group
     name_room  = 'stock_%s' % stock
@@ -55,13 +51,9 @@ def update_price(self, stock):
 
 @shared_task(bind= True)
 def update_24_hours_graph(self, ticker_id):
-    
     stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
     url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/chart/dynamic?token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
-    print(response)
-        #send data to group
     name_room  = 'stock_%s' % stock_ticker
     loop =  asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -70,14 +62,11 @@ def update_24_hours_graph(self, ticker_id):
 
 @shared_task(bind= True)
 def update_sentiment_24Hours(self, ticker_id):
-
     stock_ticker = ticker_id.lower()
     stock = get_object_or_404(StockSummary, ticker=stock_ticker)
     date_from = datetime.datetime.now() - datetime.timedelta(days=2)
     records = HourlyRecord.objects.filter(
-        stock=stock, tweet_date__gte=date_from)
-    print("We have found this record  ",  records.count)
-
+    stock=stock, tweet_date__gte=date_from)
     fetched_date = datetime.datetime.now()
     list_date = records.values_list('tweet_date', flat=True)
     list_stemmed = records.values_list('overall_stemmed_text', flat=True)
@@ -153,10 +142,7 @@ def update_recent_tweets(self, ticker_id):
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-
     number_of_tweets = 20
-
-    # keyword = dict[stock_ticker]
     keyword  = generateSearchQuery(stock_ticker)
     cursor = tweepy.Cursor(api.search_tweets, q=keyword,
                            tweet_mode="extended", result_type='recent', lang="en").items(number_of_tweets)
@@ -168,7 +154,6 @@ def update_recent_tweets(self, ticker_id):
         else:
                 full_text_tweet = tweet.full_text
 
-    
         map_sentimet=  perfomSentimentAnalysis(cleanTweet(full_text_tweet))
         mytweet  =   tweet._json
         mytweet['sentiment']  =  map_sentimet['text_sentiment']
@@ -190,21 +175,10 @@ def update_recent_tweets(self, ticker_id):
 
 
 
-
-class DateTimeEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, datetime):
-            return o.isoformat()
-
-        return super().default(o)
-
-
-
+#HELPER METHODS
 def mean(list_sentiment):
     return round(statistics.mean(list_sentiment) , 2)
 
-
-# private method
 def stemmed_text_compress(list):
     mytext = " "
     for obj in list:
@@ -237,15 +211,6 @@ def perfomSentimentAnalysis (tweet):
     return sentiment
 
 def cleanTweet(tweet):
-    
-    #remove placeholder video 
-    # new_tweet =  re.sub(r'{link}', '', tweet)
-
-    # new_tweet = re.sub(r"\[video\]", '', new_tweet)
-
-    # #not letter , punction , emoji , hash , non  english 
-    # new_tweet =  re.sub(r"[^a-z\s\(\-:\)\\\/\];='#]", '', new_tweet)
-
 
     #twitter mention 
     new_tweet =  re.sub(r'@mention', '', tweet)
@@ -264,14 +229,9 @@ def cleanTweet(tweet):
 
     # it will remove single numeric terms in the tweet. 
     new_tweet = re.sub(r'[0-9]', '', new_tweet)
-
-
     new_tweet = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",new_tweet)
     new_tweet =  new_tweet.lower()
- 
     return new_tweet
-
-
 
 def generateSearchQuery(ticker):
     lower  = ticker

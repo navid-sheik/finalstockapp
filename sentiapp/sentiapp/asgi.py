@@ -28,14 +28,6 @@ application = ProtocolTypeRouter({
             url(r'ws/singlestock/(?P<stock_name>\w+)/$', SingleStockConsumer.as_asgi()),
             url(r'ws/home/$', HomePageConsumer.as_asgi()),
            
-
-           
         ]),
-        
-
-
-       
-
     ),
-    # Just HTTP for now. (We can add other protocols later.)
 })

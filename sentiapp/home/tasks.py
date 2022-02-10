@@ -56,15 +56,6 @@ CONSUMER_SECRET = "P0JwU7GIN9gOPZ1zrvjffl9XxrnPYSb3DFpbnlsJbjVsFh8cP3"
 channel_layer  =  get_channel_layer()
 import miner.routing
 import json
-# @shared_task
-# def get_joke ():
-#     url  =  'https://api.chucknorris.io/jokes/random'
-#     response =  requests.get(url).json()
-#     joke  =  response['value']
-#     print(joke)
-#     print(miner.routing.websocket_urlpatterns)
-#     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
-
 
 @shared_task
 def get_stock_info ():
@@ -77,19 +68,6 @@ def get_stock_info ():
 
     print(miner.routing.websocket_urlpatterns)
     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
-
-
-
-# def get_history_data():
-#     url  =  "https://cloud.iexapis.com/stable/stock/tsla/chart/max?token=pk_8295cd8fa9064272b2335b548a28d293"
-#     response =  requests.get(url).json()
-
-#     input_dict = json.loads(response)
-    
-
-#     async_to_sync(channel_layer.group_send)('stock', {'type': 'send_joke', 'message' :  joke}) 
-
-
 
 @shared_task(bind=True)
 def mineTweets (self, ticker):
@@ -201,8 +179,6 @@ def createHourlyRecord (self,ticker):
     most_polarity=  TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-polarity').first().tweet_id
     most_subjectivity=    TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-subjectivity').first().tweet_id
     most_compound=    TweetRecord.objects.filter(stock = stock,tweet_date__lte= created_time).order_by('-compound').first().tweet_id
-    # print("The most positive" , most_positive)
-    # print("The polarity positive" , most_polarity)
     #Create list of stemmed word 
     list_stemmed=  list_records_previous_day.values_list('stemmed_text', flat=True)
  
@@ -259,16 +235,8 @@ def createHourlyRecord (self,ticker):
     if created == True:
         print("Successfucl")
 
-
-
-
-
 @shared_task(bind=True)
 def get_most_active(self):
-    # stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
-
     url = 'https://cloud.iexapis.com/stable/stock/market/list/mostactive?token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
     print(response)
@@ -281,10 +249,6 @@ def get_most_active(self):
 
 @shared_task(bind=True)
 def get_most_gainers(self):
-    # stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
-
     url = 'https://cloud.iexapis.com/stable/stock/market/list/gainers?token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
     print(response)
@@ -297,10 +261,6 @@ def get_most_gainers(self):
 
 @shared_task(bind=True)
 def get_most_losers(self):
-    # stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
-
     url = 'https://cloud.iexapis.com/stable/stock/market/list/losers?token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
     print(response)
@@ -313,9 +273,6 @@ def get_most_losers(self):
 
 @shared_task(bind=True)
 def get_most_nasdaq(self):
-    # stock_ticker = ticker_id.lower()
-    # url = f'https://cloud.iexapis.com/stable/stock/{ticker_id}/quote?token=pk_8295cd8fa9064272b2335b548a28d293'
-    # url = 'https://cloud.iexapis.com/stable/ref-data/iex/symbols?token=pk_8295cd8fa9064272b2335b548a28d293'
     stocks = 'atvi,adbe,adp,abnb,algn,googl,goog,amzn,amd,aep,amgn,adi,anss,aapl,amat,team,adsk,bidu,biib,bkng,avgo,cdns,chtr,ctas,csco,ctsh,cmcsa,ceg,cprt,cost,crwd,csx,ddog,dxcm,docu,dltr,ebay,ea,exc,fast,fisv,ftnt,gild,hon,idxx,ilmn,intc,intu,isrg,kdp,klac,khc,lrcx,lcid,lulu,mar,mrvl,mtch,meli,fb,mchp,mu,msft,mrna,mdlz,mnst,nflx,nvda,nxpi,orly,okta,odfl,pcar,panw,payx,pypl,pep,pdd,qcom,regn,rost,sgen,siri,swks,splk,sbux,snps,tmus,tsla,txn,vrsn,vrsk,vrtx,wba,wday,xel,xlnx,zm,zs,'
     url = f'https://cloud.iexapis.com/stable/stock/market/batch?symbols={stocks}&types=quote&token=pk_8295cd8fa9064272b2335b548a28d293'
     response = requests.get(url).json()
@@ -329,9 +286,11 @@ def get_most_nasdaq(self):
 
 
 
+
+
+#HELPER METHOD
 def mean(list_sentiment):
     return statistics.mean(list_sentiment) 
-
 
 def perfomSentimentAnalysis (tweet):
     tweet_sentiment  =  TextBlob(tweet).sentiment
@@ -358,42 +317,26 @@ def perfomSentimentAnalysis (tweet):
     return sentiment
 
 def cleanTweet(tweet):
-     
-  
-
     #remove placeholder video 
     # new_tweet =  re.sub(r'{link}', '', tweet)
-
     # new_tweet = re.sub(r"\[video\]", '', new_tweet)
-
     # #not letter , punction , emoji , hash , non  english 
     # new_tweet =  re.sub(r"[^a-z\s\(\-:\)\\\/\];='#]", '', new_tweet)
-
-
     #twitter mention 
     new_tweet =  re.sub(r'@mention', '', tweet)
-
-
     # it will remove the old style retweet text "RT"
     new_tweet = re.sub(r'^RT[\s]+', '', new_tweet)
-
     # it will remove hyperlinks
     new_tweet = re.sub(r'https?:\/\/.*[\r\n]*', '', new_tweet)
-
     # it will remove hashtags. We have to be careful here not to remove 
     # the whole hashtag because text of hashtags contains huge information. 
     # only removing the hash # sign from the word
     new_tweet = re.sub(r'#', '', new_tweet)
-
     # it will remove single numeric terms in the tweet. 
     new_tweet = re.sub(r'[0-9]', '', new_tweet)
-
-
     new_tweet = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",new_tweet)
     new_tweet =  new_tweet.lower()
- 
     return new_tweet
-
 
 def stemmed_text_compress(list):
     mytext  =  " "
@@ -419,10 +362,8 @@ def clean_text(text):
     return text_values
 
 def getMostInfluentialTweet(tweet_list):
-
     max_obj  = max(tweet_list, key=attrgetter('pos'))
     tweet_id_to_return =  max_obj.tweet.id_str
-  
     return tweet_id_to_return
 
 def generateSearchQuery(ticker):

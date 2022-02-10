@@ -242,6 +242,11 @@
                     let data = await response.json();
                     this.news_symbols = data.stock_prices
                     this.list_most_active.forEach(element => this.news.push(this.news_symbols[element.symbol].news[0]))
+                        // remove undefined values
+                    this.news = this.news.filter(function(element) {
+                        return element !== undefined;
+                    });
+                    console.log(this.news)
                 } else {
                     alert("failed to load the list of hobbies");
                 }
