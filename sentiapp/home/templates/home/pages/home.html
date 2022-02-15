@@ -1,35 +1,87 @@
 {% extends "home/base.html" %} {% block content %}
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<div id="app" class="container">
-    <!--STOCKS PRICES-->
-    <div class="row">
+<div id="app" class='main'>
+
+
+
+
+
+
+
+
+
+    <div class="row" id="toprow" style="box-sizing: border-box;padding: 1rem;">
+
+
+        <!--STOCKS PRICES-->
+
         <!--NASDAQ 100-->
-        <div class="col">
-            <div class="row" v-for="(stock, index) in symbols">
-                <div>
 
-                    <p> [[ stock.symbol]] | <span>[[ stock.name]]</span> | <span v-if="mapped_stocks_prices.length != 0">[[ mapped_stocks_prices[index].change   ]]</span>
-                    </p>
+        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 card" style="overflow-y: auto; height:500px;">
+            <h3> NASDAQ 100 </h3>
+            <div class="row" v-for="(stock, index) in symbols" style="margin-bottom: 25px;">
+
+                <div class="col-2">
+                    <img v-bind:src="`https://financialmodelingprep.com/image-stock/${stock.symbol}.png`"
+                        alt="Card image cap" style="width: 50%;" />
+                </div>
+
+                <div class="col-6">
+                    <div>
+                        [[ stock.name]]
+                    </div>
+                    <div>
+                        $[[ stock.symbol]] - [[stock.sector]]
+                    </div>
+
+                </div>
+
+                <div class="col-2">
+                    <span v-if="mapped_stocks_prices.length != 0">[[ mapped_stocks_prices[index].change ]]</span>
+
+                </div>
+
+                <div class="col-2">
                     <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
                     <button @click.native="startMiningTweetsStock(stock.symbol)" v-else>Star Mining</button>
                 </div>
+
             </div>
         </div>
+
         <!--MOST ACTIVE-->
-        <div class="col">
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 card">
+            <h3> MOST ACTIVE </h3>
             <div class="row" v-for="stock in list_most_active">
-                <div>
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
+                <div class="col-8">
+                    <div>[[ stock.name]] </div>
+                    <div>[[ stock.symbol]] </div>
+
+                </div>
+
+                <div class="col-4" style="background-color: green;">
+                    <p>[[stock.latestPrice]] </p>
                 </div>
             </div>
         </div>
+
+
+
+    </div>
+
+
+    <div class="col-4">
+
+
         <!--MOST GAINERS-->
-        <div class="col">
+        <div class="col card">
             <div class="row" v-for="stock in list_most_gainers">
                 <div>
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -37,11 +89,17 @@
         <div class="col">
             <div class="row" v-for="stock in list_most_losers">
                 <div>
-                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span></p>
+                    <p> [[ stock.symbol]] | <span>[[ stock.companyName]]</span> | <span>[[ stock.latestPrice]]</span>
+                    </p>
                 </div>
             </div>
         </div>
+
+
+
     </div>
+
+
 
     <!--NEWS-->
     <div class="row" v-if="news.lenght != 0">
@@ -92,8 +150,8 @@
 
             //Reference vue variable inside websocket
             let self = this
-                //Receive message from websocket
-            homeSocket.onmessage = function(e) {
+            //Receive message from websocket
+            homeSocket.onmessage = function (e) {
                 if (typeof e !== 'undefined') {
                     var response = JSON.parse(e.data);
                     console.log(response)
@@ -129,18 +187,20 @@
 
             };
             //Close websocket
-            homeSocket.onclose = function(e) {
+            homeSocket.onclose = function (e) {
                 console.log(e.error)
                 console.error('Chat socket closed unexpectedly');
             };
 
             this.get_symbols();
             this.getMostActive();
-            this.getMostGainers();
-            this.getMostLosers();
+            // this.getMostGainers();
+            // this.getMostLosers();
             this.getAllTweetsMining()
         },
         methods: {
+
+
             //Fetch methods
             async get_symbols() {
                 var symbolsPath = "{%url 'home:fetch_symbols'%}"
@@ -151,8 +211,8 @@
                     this.symbols.forEach(element => this.string_symbolys_fetch += element.symbol.toLowerCase() + ",");
                     console.log(data)
                     console.log(this.string_symbolys_fetch)
-                        //Fetch batch prices for symbols 
-                    this.getBatchPrices(this.string_symbolys_fetch)
+                    //Fetch batch prices for symbols 
+                    // this.getBatchPrices(this.string_symbolys_fetch)
                 } else {
                     alert("Failed to fetch symbols");
                 }
@@ -164,7 +224,7 @@
                     let data = await response.json();
                     this.list_most_active = data.stock_symbol
                     this.list_most_active.forEach(element => this.string_news += element.symbol.toLowerCase() + ",");
-                    this.get_batch_news(this.string_news)
+                    // this.get_batch_news(this.string_news)
 
                 } else {
                     alert("Failed to load most active stocks");
@@ -242,8 +302,8 @@
                     let data = await response.json();
                     this.news_symbols = data.stock_prices
                     this.list_most_active.forEach(element => this.news.push(this.news_symbols[element.symbol].news[0]))
-                        // remove undefined values
-                    this.news = this.news.filter(function(element) {
+                    // remove undefined values
+                    this.news = this.news.filter(function (element) {
                         return element !== undefined;
                     });
                     console.log(this.news)
