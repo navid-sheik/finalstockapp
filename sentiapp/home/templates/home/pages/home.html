@@ -20,82 +20,89 @@
 
         <!--NASDAQ 100-->
 
-        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 card"
-            style="overflow-y: auto; overflow-x: hidden; height:500px; margin-bottom: 20px;">
-            <h3> NASDAQ 100 </h3>
-            <div class="row no-gutters" v-for="(stock, index) in symbols" style="margin-bottom: 15px; ">
+        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
 
-                <div class="col-2">
-                    <img v-bind:src="`https://financialmodelingprep.com/image-stock/${stock.symbol}.png`"
-                        class="rounded mx-auto d-block" alt="Card image cap" style="width: 60%; " />
-                </div>
+            <div class=" card card-block"
+                style="overflow-y: auto; overflow-x: hidden; height:500px;margin-bottom: 20px; background-color: #383c48;color: white;">
+                <h3 style="padding-left: 22.93px;"> NASDAQ 100 </h3>
+                <div class="row no-gutters" v-for="(stock, index) in symbols" style="margin-bottom: 10px;">
 
-                <div class="col-6  d-flex align-items-center" style="border-bottom: 1px solid lightgrey;">
-                    <div>
+                    <div class="col-2">
+                        <img v-bind:src="`https://financialmodelingprep.com/image-stock/${stock.symbol}.png`"
+                            class="rounded mx-auto d-block" alt="Card image cap" style="width: 60%; " />
+                    </div>
+
+                    <div class="col-6  d-flex align-items-center" style="border-bottom: 1px solid lightgrey;">
                         <div>
-                            [[ stock.name]]
-                        </div>
-                        <div>
-                            $[[ stock.symbol]] - [[stock.sector]]
+                            <div>
+                                [[ stock.name]]
+                            </div>
+                            <div>
+                                $[[ stock.symbol]] - [[stock.sector]]
+                            </div>
+
+
                         </div>
 
 
                     </div>
 
+                    <div class="col-2 d-flex justify-content-center align-items-center"
+                        style=" border-bottom: 1px solid lightgrey;">
+                        <div>
+                            <div v-if="mapped_stocks_prices.length != 0">
+                                $[[ mapped_stocks_prices[index].latestPrice ]]
+                            </div>
+                            <div v-if="mapped_stocks_prices.length != 0">
+                                [[ mapped_stocks_prices[index].change ]]%
+                            </div>
 
-                </div>
-
-                <div class="col-2 d-flex justify-content-center align-items-center"
-                    style=" border-bottom: 1px solid lightgrey;">
-                    <div>
-                        <div v-if="mapped_stocks_prices.length != 0">
-                            $[[ mapped_stocks_prices[index].latestPrice ]]
-                        </div>
-                        <div v-if="mapped_stocks_prices.length != 0">
-                            [[ mapped_stocks_prices[index].change ]]%
                         </div>
 
                     </div>
 
+                    <div class="col-2 d-flex justify-content-center align-items-center" style="">
+                        <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
+                        <button class="btn btn-light" @click.native="startMiningTweetsStock(stock.symbol)" v-else>
+                            MINE</button>
+
+                    </div>
+
                 </div>
-
-                <div class="col-2 d-flex justify-content-center align-items-center" style="">
-                    <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
-                    <button class="btn btn-dark" @click.native="startMiningTweetsStock(stock.symbol)" v-else>
-                        MINE</button>
-
-                </div>
-
             </div>
         </div>
 
         <!--MOST ACTIVE-->
-        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 card"
-            style="overflow-y: auto; overflow-x: hidden; height:500px;">
-            <h3> MOST ACTIVE </h3>
-            <div class="row" v-for="stock in list_most_active">
-                <div class="col-8" style="border-bottom: 1px solid lightgrey;">
-                    <div>
-                        <div> <b>[[ stock.symbol]] </b></div>
+        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+
+
+            <div class="card card-block"
+                style="overflow-y: auto; overflow-x: hidden; height:500px;margin-bottom: 20px;padding: 5px; background-color: #383c48;color: white;">
+                <h3> MOST ACTIVE </h3>
+                <div class="row" v-for="stock in list_most_active">
+                    <div class="col-8" style="border-bottom: 1px solid lightgrey;">
                         <div>
-                            <p>[[ stock.companyName]] </p>
-                        </div>
+                            <div> <b>[[ stock.symbol]] </b></div>
+                            <div>
+                                <p>[[ stock.companyName]] </p>
+                            </div>
 
-                    </div>
-
-
-                </div>
-
-                <div class="col d-flex justify-content-center" style=" border-bottom: 1px solid lightgrey;">
-                    <div>
-                        <div> <b>$[[stock.latestPrice]] </b></div>
-                        <div>
-                            <p style="text-align: center;">[[ (stock.changePercent * 100).toFixed(2) ]]% </p>
                         </div>
 
 
                     </div>
 
+                    <div class="col d-flex justify-content-center" style=" border-bottom: 1px solid lightgrey;">
+                        <div>
+                            <div> <b>$[[stock.latestPrice]] </b></div>
+                            <div>
+                                <p style="text-align: center;">[[ (stock.changePercent * 100).toFixed(2) ]]% </p>
+                            </div>
+
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +115,7 @@
     <div class="row flex-nowrap" style="background-color: none;overflow-y: scroll;padding: 10px;">
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4" v-for="stock in list_iex_stock">
             <div class="card card-block"
-                style="padding: 10px;display: flex; flex-direction: column;background-color: #1B1B1B; color: white;">
+                style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white;">
                 <!-- TICKER-->
                 <div>
                     <span style="background-color: none;"> <b>[[stock.symbol]] </b></span>
@@ -167,7 +174,7 @@
         <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="background-color: none;">
 
             <!-- Row 1 new-->
-            <div class="row no-gutters" style="background-color: lawngreen;margin-top: 25px; margin-bottom: 25px;"
+            <div class="row no-gutters" style="background-color: lawngreen;margin-bottom: 25px;"
                 v-for="single in news.slice(0,1)">
 
 
@@ -175,7 +182,7 @@
                     <img v-bind:src="single.image" style="width: 100%; height: 100%;object-fit: fill;" />
                 </div>
 
-                <div class="col" style="background-color: #1B1B1B;">
+                <div class="col" style="background-color: #383c48;">
                     <div
                         style="display:flex; flex-direction: column;align-items: stretch;justify-content: stretch;padding: 10px;">
                         <div
@@ -207,7 +214,7 @@
 
 
                 <div class="col" style="padding: 10px;" v-for="single in news.slice(2,5)">
-                    <div class="card card-block" style="background-color: #1B1B1B;">
+                    <div class="card card-block" style="background-color: #383c48;">
 
                         <div>
                             <img v-bind:src="single.image" style="width: 100%; height:150px; object-fit: fill;" />
@@ -236,16 +243,18 @@
 
                 </div>
 
-                <div class="col" style="background-color: #1B1B1B;">
+                <div class="col" style="background-color: #383c48;">
                     <div
                         style="display:flex; flex-direction: column;align-items: center;justify-content: center;padding: 10px;">
-                        <div style="background-color: #1B1B1B; color: white;">
+                        <div
+                            style="background-color: #383c48; color: white;height: 55px; text-overflow: ellipsis; overflow: hidden;margin-bottom: 5px;">
 
                             <h4>[[ single.headline ]]</h4>
 
                         </div>
 
-                        <div style="background-color: #1B1B1B; color: white;">
+                        <div
+                            style="background-color: #383c48; color: white;height: 70px; text-overflow: ellipsis; overflow: hidden;">
                             <p>[[ single.summary]]</p>
 
 
@@ -285,7 +294,7 @@
 
 
                 <div class="card card-block"
-                    style="overflow-y: auto; overflow-x: hidden; height:500px;margin-bottom: 20px;padding: 5px;">
+                    style="overflow-y: auto; overflow-x: hidden; height:500px;margin-bottom: 20px;padding: 5px; background-color: #383c48;color: white;">
 
                     <h3> MOST GAINERS </h3>
                     <div class="row" v-for="stock in list_most_gainers">
@@ -316,7 +325,8 @@
                 </div>
 
 
-                <div class="card card-block" style="overflow-y: auto; overflow-x: hidden; height:500px;padding: 5px;">
+                <div class="card card-block"
+                    style="overflow-y: auto; overflow-x: hidden; height:500px;padding: 5px; background-color: #383c48;color: white;">
 
                     <h3> MOST LOSERS </h3>
                     <div class="row" v-for="stock in list_most_losers">
@@ -462,11 +472,11 @@
                 console.error('Chat socket closed unexpectedly');
             };
 
-            // this.get_symbols();
+            this.get_symbols();
             this.getMostActive();
-            // // this.getMostGainers();
-            // // this.getMostLosers();
-            // this.getAllTweetsMining()
+            this.getMostGainers();
+            this.getMostLosers();
+            this.getAllTweetsMining()
             this.getIexVolume()
         },
         methods: {
@@ -495,7 +505,7 @@
                     let data = await response.json();
                     this.list_most_active = data.stock_symbol
                     this.list_most_active.forEach(element => this.string_news += element.symbol.toLowerCase() + ",");
-                    // this.get_batch_news(this.string_news)
+                    this.get_batch_news(this.string_news)
 
                 } else {
                     alert("Failed to load most active stocks");
