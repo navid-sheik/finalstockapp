@@ -350,213 +350,386 @@
 
 
 
-
-    <div class="row" style="margin-top: 50px;">
-        <div id="left-graph-ticker-container" class="col-8">
-            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-primary" @click.native="stockHistoryDynamics()">1D</button>
-
-                </div>
-
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Days()">5D</button>
-
-                </div>
-
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Month()">1M</button>
-
-                </div>
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory3Months()">3M</button>
-
-                </div>
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory1Year()">1Y</button>
-
-                </div>
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistory5Years()">5Y</button>
-
-                </div>
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary" @click.native="stockHistoryMax()">MAX</button>
-
-                </div>
-
-
-
+    <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <!-- <button @click.native="getRecentTweets()"> Get recent tweets </button> -->
             </div>
-
-            <!-- <canvas id="stockChart"></canvas> -->
-
         </div>
-        <div id="right-tweet-container" class="col-4">
-            <div class="list-group" v-if="tweet !== null">
-                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-                    <div class="d-flex w-100 " style="margin-bottom : 10px;">
-                        <img v-bind:src="tweet.user.profile_image_url" width="50" height="50"
-                            style="margin-right : 10px;">
-                        <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+    </div>
+    <!--tweete popular-->
+
+    <div class="row flex-nowrap" style="background-color: bisque;overflow-y: scroll;padding : 0px; ">
+
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12" v-for="tweet in tweet_list_popular_recent">
+
+            <div class="card card-block"
+                style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
+                <!-- TICKER-->
+                <div id="tweet-top-container" style="background-color: none; display: flex;flex-direction: row;">
+
+                    <div style="background-color: none;">
+                        <img v-bind:src="`${tweet.user.profile_image_url}`" style="width: 60px;" class="rounded">
+                    </div>
+
+                    <div style="background-color: none; padding: 0 1rem;">
+                        <div>
+                            <span style="background-color: none;"> <b> [[tweet.user.name]] </b></span>
+                        </div>
+                        <!-- STOCK NAME-->
+                        <div style=" text-overflow: ellipsis; overflow: hidden; color: whitesmoke;">
+                            <span> @[[tweet.user.screen_name]]</span>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div
+                    style="display: inline-block; margin-top: 10px; height: 100px; overflow: hidden; text-overflow: ellipsis;">
+
+
+                    <p>[[tweet.full_text]]</p>
+                </div>
+
+                <div style="display: flex; flex-direction: row; column-gap: 5; justify-content: stretch;">
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.favorite_count]]
+
+                        </div>
 
                     </div>
-                    <div style="word-wrap: break-word;">
-                        <span class="mb-1">[[tweet.text]]
-                        </span>
-                        <small>[[tweet.created_at]]</small>
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa fa-retweet"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.retweet_count]]
+
+                        </div>
+
                     </div>
-                </a>
 
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-comment"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            24
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
             </div>
         </div>
-
-
-
     </div>
 
-    <div class="row" style="margin-top: 50px;">
-        <h1>Most Popular Tweets</h1>
-        <button @click.native="getRecentTweets()"> Get recent tweets </button>
-        <div class="list-group" v-for="tweet in tweet_list_popular_recent">
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-                <div class="d-flex w-100 " style="margin-bottom : 10px;"
-                    :style="[tweet.sentiment == 'background-color : green']">
-                    <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
-                    <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+    <!--SENTIMENT ANALYSIS-->
+
+    <div class="row" style="margin-top: 20px;background-color: none;">
+        <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="background-color: none;padding: 5px;">
+
+            <div class="card card-block"
+                style="background-color: none;display: flex; flex-direction: column; padding: 5px; background-color: #383c48; margin-bottom: 10px;">
+
+                <div
+                    style="background-color: none; display: flex; flex-direction: row;justify-content: space-between; align-items: stretch; column-gap: 10px;">
+                    <div style="background-color: none;flex: 1;">
+                        <button type="button" class="btn btn-primary" @click.native="sentimentAnalysis24Hours()"
+                            style="width: 100%;">1D</button>
+
+                    </div>
+
+                    <div style="background-color: none;flex: 1; ">
+                        <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(5)"
+                            style="width: 100%;">5D</button>
+
+                    </div>
+
+
+                    <div style="background-color: none; flex: 1;">
+                        <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(90)"
+                            style="width: 100%;">3M</button>
+
+
+                    </div>
+
+                    <div style="background-color: none;flex: 1;">
+                        <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(365)"
+                            style="width: 100%;">1Y</button>
+
+                    </div>
+
+
+
+                    <div style="background-color: none;flex: 1;">
+
+
+                        <button type="button" class="btn btn-secondary" @click.native="sentimentAnalysisRange(1825)"
+                            style="width: 100%;">5Y</button>
+
+
+                    </div>
+
+
+                    <div style="background-color: none;flex: 1;">
+
+
+                        <button type="button" class="btn btn-secondary" @click.native=""
+                            style="width: 100%;">MAX</button>
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 </div>
-                <div style="word-wrap: break-word;">
-                    <span class="mb-1">[[tweet.full_text]]
-                    </span>
-                    <small>[[tweet.created_at]]</small>
-                    <small> Retweets : [[tweet.retweet_count]]</small>
-                    <small> Favorite : [[tweet.favorite_count]]</small>
-                </div>
-            </a>
-
-        </div>
-
-    </div>
 
 
-    <div class="row" style="margin-top: 50px;">
-        <div id="left-graph-ticker-container" class="col-8">
-            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-primary" @click.native="sentimentAnalysis24Hours()">1D</button>
+                <div style="background-color: none;">
+                    <canvas id="analysischart"></canvas>
+
 
                 </div>
-
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary"
-                        @click.native="sentimentAnalysisRange(5)">5D</button>
-
-                </div>
-
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary"
-                        @click.native="sentimentAnalysisRange(30)">1M</button>
-
-                </div>
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary"
-                        @click.native="sentimentAnalysisRange(90)">3M</button>
-
-                </div>
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary"
-                        @click.native="sentimentAnalysisRange(365)">1Y</button>
-
-                </div>
-
-
-                <div class="btn-group mr-3" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary"
-                        @click.native="sentimentAnalysisRange(1825)">5Y</button>
-
-                </div>
-
 
 
             </div>
 
-            <canvas id="analysischart"></canvas>
-
         </div>
-        <div id="right-tweet-container" class="col-4">
-            <div class="card">
+
+
+
+        <div class="col" style="background-color: none; padding: 5px; ">
+
+            <div class="card card-block" style="background-color: #383c48; color: white; padding: 5px;">
 
                 <div class="card-body">
-                    <h5 class="card-title">Sentiment Overview</h5>
+                    <h5 class="card-title">SENTIMEN OVERVIEW</h5>
                     <span class="card-text">Here you can see the public sentiment based on twitter over the last 24
                         hours
                     </span>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Compound :[[mean_24_compound]]</li>
-                    <li class="list-group-item">Posivity :[[mean_24_positivity]] </li>
-                    <li class="list-group-item">Negativity :[[mean_24_negativity]]</li>
-                    <li class="list-group-item">Neutraility :[[mean_24_neutrality]]</li>
-                    <li class="list-group-item">Polarity :[[mean_24_polarity]]</li>
-                    <li class="list-group-item">Subjectivity :[[mean_24_subjectivity]] </li>
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>COMPOUND </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_compound]] </span>
+                            </div>
+                        </div>
+
+
+
+                    </li>
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>POSITIVITY </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_positivity]]</span>
+                            </div>
+
+                        </div>
+
+
+                    </li>
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>NEGATIVITY </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_negativity]]</span>
+                            </div>
+                        </div>
+
+                    </li>
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>NEUTRALITY </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_neutrality]]</span>
+                            </div>
+                        </div>
+
+
+
+
+                    </li>
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>POLARITY </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_polarity]]</span>
+                            </div>
+                        </div>
+
+
+                    <li class="list-group-item" style="background-color: #383c48;">
+                        <div style="display: flex;flex-direction: row; justify-content: space-between; ">
+                            <div style="color: white;">
+                                <span>SUBJECTIVITY </span>
+                            </div>
+
+                            <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
+                                <span>[[mean_24_subjectivity]] </span>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
 
+
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <button @click.native="get_positive_tweets()"> POSITIVE </button>
+    <button @click.native="get_negative_tweets()"> NEGATIVE </button>
+    <button @click.native="get_neutral_tweets()"> NEUTRAL </button>
+    <div class="row flex-nowrap" style="background-color: bisque;overflow-y: scroll;padding : 0px; ">
+
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12" v-for="tweet in tweet_list_basedOn_sentiment">
+
+            <div class="card card-block"
+                style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
+                <!-- TICKER-->
+                <div id="tweet-top-container" style="background-color: none; display: flex;flex-direction: row;">
+
+                    <div style="background-color: none;">
+                        <img v-bind:src="`${tweet.user.profile_image_url}`" style="width: 60px;" class="rounded">
+                    </div>
+
+                    <div style="background-color: none; padding: 0 1rem;">
+                        <div>
+                            <span style="background-color: none;"> <b> [[tweet.user.name]] </b></span>
+                        </div>
+                        <!-- STOCK NAME-->
+                        <div style=" text-overflow: ellipsis; overflow: hidden; color: whitesmoke;">
+                            <span> @[[tweet.user.screen_name]]</span>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div
+                    style="display: inline-block; margin-top: 10px; height: 100px; overflow: hidden; text-overflow: ellipsis;">
+
+
+                    <p>[[tweet.full_text]]</p>
+                </div>
+
+                <div style="display: flex; flex-direction: row; column-gap: 5; justify-content: stretch;">
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.favorite_count]]
+
+                        </div>
+
+                    </div>
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa fa-retweet"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.retweet_count]]
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-comment"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            24
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
             </div>
         </div>
-
-
-
     </div>
 
 
 
 
-
-    <div class="row" style="margin-top: 50px;">
-        <h1>Positive, Negative, Neutral</h1>
-        <button @click.native="get_positive_tweets()"> POSITIVE </button>
-        <button @click.native="get_negative_tweets()"> NEGATIVE </button>
-        <button @click.native="get_neutral_tweets()"> NEUTRAL </button>
-        <div class="list-group" v-for="tweet in tweet_list_basedOn_sentiment">
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-                <div class="d-flex w-100 " style="margin-bottom : 10px;"
-                    :style="[tweet.sentiment == 'background-color : green']">
-                    <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
-                    <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
-
-                </div>
-                <div style="word-wrap: break-word;">
-                    <span class="mb-1">[[tweet.full_text]]
-                    </span>
-                    <small>[[tweet.created_at]]</small>
-                    <small> Retweets : [[tweet.retweet_count]]</small>
-                    <small> Favorite : [[tweet.favorite_count]]</small>
-                </div>
-            </a>
-
-        </div>
-
-    </div>
 
 
 
@@ -580,24 +753,87 @@
     </div>
 
 
-    <div class="row" style="margin-top: 50px;">
-        <div class="list-group" v-for="tweet in tweet_list_searched">
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-                <div class="d-flex w-100 " style="margin-bottom : 10px;">
-                    <img v-bind:src="tweet.user.profile_image_url" width="50" height="50" style="margin-right : 10px;">
-                    <h5 class="mb-1">[[tweet.user.screen_name]] </h5>
+
+    <div class="row flex" style="background-color: bisque;overflow-y: scroll;padding : 0px; ">
+
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6" v-for="tweet in tweet_list_searched"
+            style="margin-top: 10px;">
+
+            <div class="card card-block"
+                style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
+                <!-- TICKER-->
+                <div id="tweet-top-container" style="background-color: none; display: flex;flex-direction: row;">
+
+                    <div style="background-color: none;">
+                        <img v-bind:src="`${tweet.user.profile_image_url}`" style="width: 60px;" class="rounded">
+                    </div>
+
+                    <div style="background-color: none; padding: 0 1rem;">
+                        <div>
+                            <span style="background-color: none;"> <b> [[tweet.user.name]] </b></span>
+                        </div>
+                        <!-- STOCK NAME-->
+                        <div style=" text-overflow: ellipsis; overflow: hidden; color: whitesmoke;">
+                            <span> @[[tweet.user.screen_name]]</span>
+
+                        </div>
+                    </div>
 
                 </div>
-                <div style="word-wrap: break-word;">
-                    <span class="mb-1">[[tweet.full_text]]
-                    </span>
-                    <small>[[tweet.created_at]]</small>
-                </div>
-            </a>
 
+                <div
+                    style="display: inline-block; margin-top: 10px; height: 100px; overflow: hidden; text-overflow: ellipsis;">
+
+
+                    <p>[[tweet.full_text]]</p>
+                </div>
+
+                <!-- <div style="display: flex; flex-direction: row; column-gap: 5; justify-content: stretch;">
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.favorite_count]]
+
+                        </div>
+
+                    </div>
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa fa-retweet"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            [[tweet.retweet_count]]
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                        <div style="background-color: none; margin-right: 5px;">
+                            <i class="fa-solid fa-comment"></i>
+                        </div>
+                        <div style="background-color: none;">
+                            24
+
+                        </div>
+
+                    </div>
+
+
+
+                </div> -->
+            </div>
         </div>
-
     </div>
+
+
 
 
 
