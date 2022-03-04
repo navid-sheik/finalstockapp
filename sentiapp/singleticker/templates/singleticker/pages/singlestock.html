@@ -21,7 +21,7 @@
 
                         <div style="display: flex;flex-direction: row;">
                             <div>
-                                <h3> Tesla, Inc. </h3>
+                                <h3> [[companyName]] </h3>
 
                             </div>
 
@@ -32,12 +32,12 @@
                         <div style="display: flex;flex-direction: row;background-color: none;">
                             <div>
 
-                                $TSLA -
+                                $[[symbol]] -
                             </div>
 
                             <div>
 
-                                Tehcnology
+                                [[sector]]
                             </div>
 
 
@@ -52,7 +52,7 @@
 
 
                     <div class="col d-flex justify-content-end" style="background-color: none;">
-                        <img style="width: 100px;" src="https://financialmodelingprep.com/image-stock/TSLA.png" />
+                        <img v-if="symbol != '' " style="width: 100px;" v-bind:src="`https://financialmodelingprep.com/image-stock/${symbol}.png`" />
 
 
 
@@ -69,23 +69,23 @@
                 <div class="row no-gutters" style="background-color: none;">
                     <div style="display: flex;flex-direction: column;background-color: none;">
                         <div style="background-color: none;">
-                            <h4>$902.8 </h4>
+                            <h4> $[[currentPrice]] </h4>
 
                         </div>
 
                         <div style="display: flex;flex-direction: row;background-color: none;">
-                            <div>
+                            <div style="margin-left: 5px;">
 
-                                %13.3 -
+                                %[[percentageChange]] &#9679;
                             </div>
 
-                            <div>
+                            <div style="margin-left: 5px;">
 
-                                $12.5 -
+                                $[[priceChange]] &#9679;
                             </div>
 
 
-                            <div>
+                            <div style="margin-left: 5px;">
 
                                 Today
                             </div>
@@ -117,11 +117,11 @@
 
             <div class="card card-block" style="padding: 5px; background-color: #383c48; color: white;">
 
-                <h6> STATS </h6>
+                <h6> STATISTICS </h6>
                 <div style="background-color: none; display: flex;flex-direction: row; flex-wrap: wrap;">
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            $886.00
+                            $[[marketOpen]]
 
                         </div>
                         <div>
@@ -131,7 +131,7 @@
                     </div>
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            $886.00
+                            $[[marketHigh]]
 
                         </div>
                         <div>
@@ -142,7 +142,7 @@
 
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            $886.00
+                            $[[marketLow ]]
 
                         </div>
                         <div>
@@ -153,11 +153,11 @@
 
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            $886.00B
+                            %[[yearlyChange ]]
 
                         </div>
                         <div>
-                            Market cap
+                            Yearly Change
 
                         </div>
                     </div>
@@ -175,7 +175,7 @@
 
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            153.03
+                            [[peRatio ]]
 
                         </div>
                         <div>
@@ -265,14 +265,7 @@
                     <h5>ABOUT</h5>
                 </div>
                 <div style="height: 148px; text-overflow: ellipsis; overflow: hidden;margin-bottom: 10px;padding: 5px;">
-                    Intel Corporation, stylized as intel, is an American multinational corporation and technology
-                    company headquartered in Santa Clara, California. It is the world's largest semiconductor chip
-                    manufacturer by revenue, and is the developer of the x86 series of microprocessors, the processors
-                    found in most personal computers. Incorporated in Delaware, Intel ranked No. 45 in the 2020 Fortune
-                    500 list of the largest United States corporations by total revenue for nearly a decade, from 2007
-                    to 2016 fiscal years. Intel supplies microprocessors for computer system manufacturers such as Acer,
-                    Lenovo, HP,
-
+                    [[about]]
                 </div>
 
                 <ul class="list-group list-group-flush">
@@ -283,7 +276,7 @@
                             </div>
 
                             <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
-                                <span>Elon Musk </span>
+                                <span>[[ceo]]</span>
                             </div>
                         </div>
                     </li>
@@ -291,11 +284,11 @@
                     <li class="list-group-item" style="background-color: #383c48;">
                         <div style="display: flex;flex-direction: row; justify-content: space-between;  ">
                             <div style="color: white;">
-                                <span>FOUNDED </span>
+                                <span>COUNTRY </span>
                             </div>
 
                             <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
-                                <span>18/06/1968 </span>
+                                <span>[[country]]</span>
                             </div>
                         </div>
                     </li>
@@ -309,7 +302,7 @@
                             </div>
 
                             <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
-                                <span>NASQUA </span>
+                                <span>[[exchange]] </span>
                             </div>
                         </div>
                     </li>
@@ -321,7 +314,7 @@
                             </div>
 
                             <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
-                                <span>www.apple.com </span>
+                                <span>[[website]]</span>
                             </div>
                         </div>
                     </li>
@@ -333,7 +326,7 @@
                             </div>
 
                             <div style="display: flex;flex-direction: column; justify-content: flex-end; color: white;">
-                                <span>7,000 </span>
+                                <span>[[employees]]</span>
                             </div>
                         </div>
                     </li>
@@ -942,8 +935,37 @@
         delimiters: ["[[", "]]"],
         data() {
             return {
-                ctx: null,
+
+                companyName: "",
+                symbol: "",
+                sector: "",
                 currentPrice: 0,
+                percentageChange: 0,
+                priceChange: 0,
+
+                marketOpen: 0,
+                marketHigh: 0,
+                marketLow: 0,
+                marketCap: 0,
+                yearlyChange  : 0,
+                dividendYield: 0,
+                peRatio: 0,
+
+
+                about: "",
+                ceo: "",
+                country: "",
+                exchange: "",
+                website: "",
+                employees: 0,
+
+
+
+
+
+
+                ctx: null,
+
                 stockSocket: null,
                 labelsx: null,
                 data: null,
@@ -1097,11 +1119,22 @@
             if (response.ok) {
                 let data = await response.json();
                 console.log(data.stock_quote)
-                this.currentPrice = data.stock_quote.latestPrice
+                this.symbol = data.stock_quote.symbol;
+                this.companyName = data.stock_quote.companyName;
+                this.percentageChange =  (data.stock_quote.changePercent * 100).toFixed(2);
+                this.priceChange =  (data.stock_quote.change).toFixed(2);
+                this.currentPrice = data.stock_quote.latestPrice;
+                this.marketOpen = data.stock_quote.iexOpen;
+                this.marketHigh  =   data.stock_quote.week52High;
+                this.marketLow  =   data.stock_quote.week52Low;
+                this.marketCap  =   data.stock_quote.marketCap;
+                this.yearlyChange  =   (data.stock_quote.ytdChange * 100).toFixed(2);
+                this.peRatio  =   data.stock_quote.peRatio;
             } else {
                 alert("failed to load the list of hobbies");
             }
 
+            this.getCompanyInfo();
 
 
 
@@ -1653,6 +1686,29 @@
 
         },
         methods: {
+            async getCompanyInfo() {
+                var pathArray = window.location.pathname.split('/');
+                //make a get request
+
+                console.log(pathArray[2].toLowerCase())
+                var urlWithPath = "{%url 'singleticker:get_company_into' 2000000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
+                let response = await fetch(urlWithPath);
+                if (response.ok) {
+                    let data = await response.json();
+                    console.log("Company info")
+                    console.log(data.stock_quote)
+                    this.about = data.stock_quote.description;
+                    this.ceo =   data.stock_quote.CEO;
+                    this.country = data.stock_quote.country;
+                    this.exchange =  data.stock_quote.exchange;
+                    this.website =  data.stock_quote.website;
+                    this.sector = data.stock_quote.industry;
+                    this.employees = data.stock_quote.employees;
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
+
+            },
 
             async stockHistoryDynamics() {
                 var pathArray = window.location.pathname.split('/');

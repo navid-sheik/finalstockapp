@@ -34,6 +34,14 @@ def fetchStockData(request, ticker_id):
     return JsonResponse({'stock_quote': response})
 
 
+def fetchCompanyInfo(request, ticker_id):
+    stock_ticker = ticker_id.lower()
+    url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/company?token=pk_8295cd8fa9064272b2335b548a28d293'
+    response = requests.get(url).json()
+    return JsonResponse({'stock_quote': response})
+
+
+
 def fetchStockDataHistory(request, ticker_id, timestamp):
     stock_ticker = ticker_id.lower()
     url = f'https://cloud.iexapis.com/stable/stock/{stock_ticker}/chart/{timestamp}?token=pk_8295cd8fa9064272b2335b548a28d293'
@@ -285,7 +293,7 @@ def getSentiment24Hours(request, ticker_id):
 
         'values_polarity':  list(list_polarity),
         'values_subjectivity':  list(list_subjecivity),
-        'dates' :  [dt.date() for dt in list_date]
+        'dates' :  [dt.time().strftime("%H:%M") for dt in list_date]
 
     })
 
@@ -357,7 +365,7 @@ def getSentimentTimeRange(request, ticker_id, time_range):
 
         'values_polarity':  list(list_polarity),
         'values_subjectivity':  list(list_subjecivity),
-        'dates' :  list(list_date)
+        'dates' :  [dt.date() for dt in list_date]
 
     })
 

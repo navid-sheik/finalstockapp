@@ -24,7 +24,7 @@
 
             <div class=" card card-block"
                 style="overflow-y: auto; overflow-x: hidden; height:500px;margin-bottom: 20px; background-color: #383c48;color: white;">
-                <h3 style="padding-left: 22.93px;"> NASDAQ 100 </h3>
+                <h3 style="padding-left: 22.93px;margin-bottom: 5px;"> Nasdaq 100</h3>
                 <div class="row no-gutters" v-for="(stock, index) in symbols" style="margin-bottom: 10px;">
 
                     <div class="col-2">
@@ -54,16 +54,26 @@
                                 $[[ mapped_stocks_prices[index].latestPrice ]]
                             </div>
                             <div v-if="mapped_stocks_prices.length != 0">
-                                [[ mapped_stocks_prices[index].change ]]%
+
+                                <span style="padding: 2px;border-radius: 5px;;"
+                                    :style="[mapped_stocks_prices[index].change< 0 ? {'background': '#ff0000'} : {'background': '#18a558'}]">[[
+                                    (mapped_stocks_prices[index].changePercent * 100).toFixed(2) ]]%</span>
                             </div>
 
                         </div>
 
                     </div>
 
-                    <div class="col-2 d-flex justify-content-center align-items-center" style="">
-                        <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">View Sentiment</a>
-                        <button class="btn btn-light" @click.native="startMiningTweetsStock(stock.symbol)" v-else>
+                    <div class="col-2 d-flex justify-content-center align-items-center">
+                        <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">
+
+
+                            <button class="btn btn-primary">
+                                VIEW </button>
+                        </a>
+
+                        <button class="btn btn-light" :id="`mine-btn-${stock.symbol}`"
+                            @click.native="startMiningTweetsStock(stock.symbol)" v-else>
                             MINE</button>
 
                     </div>
@@ -96,7 +106,12 @@
                         <div>
                             <div> <b>$[[stock.latestPrice]] </b></div>
                             <div>
-                                <p style="text-align: center;">[[ (stock.changePercent * 100).toFixed(2) ]]% </p>
+
+
+                                <p style="padding: 2px;border-radius: 5px;text-align: center;"
+                                    :style="[stock.changePercent < 0 ? {'background': '#ff0000'} : {'background': '#18a558'}]">
+                                    [[(stock.changePercent
+                                    * 100).toFixed(2)]]%</p>
                             </div>
 
 
@@ -113,7 +128,7 @@
 
     <!--IEX VOLUME-->
     <div class="row flex-nowrap" style="background-color: none;overflow-y: scroll;padding: 10px;">
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4" v-for="stock in list_iex_stock">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6" v-for="stock in list_iex_stock">
             <div class="card card-block"
                 style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white;">
                 <!-- TICKER-->
@@ -134,9 +149,11 @@
 
                     </div>
 
-                    <div style="border-radius: 5px;;">
+                    <div>
 
-                        <span style="background-color: red;">[[(stock.changePercent * 100).toFixed(2)]]%</span>
+                        <span style="padding: 2px;border-radius: 5px;"
+                            :style="[stock.changePercent < 0 ? {'background': '#ff0000'} : {'background': '#18a558'}]">[[(stock.changePercent
+                            * 100).toFixed(2)]]%</span>
                     </div>
 
 
@@ -314,7 +331,11 @@
                             <div>
                                 <div> <b>$[[stock.latestPrice]] </b></div>
                                 <div>
-                                    <p style="text-align: center;">[[ (stock.changePercent * 100).toFixed(2) ]]% </p>
+
+                                    <p style="padding: 2px;border-radius: 5px;text-align: center;"
+                                        :style="[stock.changePercent < 0 ? {'background': '#ff0000'} : {'background': '#18a558'}]">
+                                        [[(stock.changePercent
+                                        * 100).toFixed(2)]]%</p>
                                 </div>
 
 
@@ -346,7 +367,11 @@
                             <div>
                                 <div> <b>$[[stock.latestPrice]] </b></div>
                                 <div>
-                                    <p style="text-align: center;">[[ (stock.changePercent * 100).toFixed(2) ]]% </p>
+
+                                    <p style="padding: 2px;border-radius: 5px;text-align: center;"
+                                        :style="[stock.changePercent < 0 ? {'background': '#ff0000'} : {'background': '#18a558'}]">
+                                        [[(stock.changePercent
+                                        * 100).toFixed(2)]]%</p>
                                 </div>
 
 
@@ -417,6 +442,12 @@
                 news_symbols: [],
                 news: [],
             }
+        }, computed: {
+            colorClass() {
+                let color = (computer.Online === '1') ? 'green' : 'red';
+                return 'color: ' + color;
+            }
+
         },
 
         async created() {
@@ -437,15 +468,20 @@
                     console.log(response)
                     if (response.hasOwnProperty('most_active')) {
                         console.log(response.most_active)
-                        self.most_active = response.most_active
+                        self.list_most_active = response.most_active
                     }
                     if (response.hasOwnProperty('most_gainers')) {
                         console.log(response.most_gainers)
-                        self.most_gainers = response.most_gainers
+                        self.list_most_gainers = response.most_gainers
                     }
                     if (response.hasOwnProperty('most_losers')) {
                         console.log(response.most_losers)
-                        self.most_losers = response.most_losers
+                        self.list_most_losers = response.most_losers
+                    }
+
+                    if (response.hasOwnProperty('most_volume')) {
+                        console.log(response.most_losers)
+                        self.list_iex_stock = data.most_volume
                     }
                     if (response.hasOwnProperty('nasdaq')) {
                         self.prices_symbols = response.nasdaq
@@ -550,13 +586,21 @@
 
             },
             async startMiningTweetsStock(ticker_id) {
+                var buttonName = "#mine-btn-" + ticker_id;
+                $(buttonName).html('<i class="fas fa-spinner fa-spin"></i>');
                 let miningPath = "{%url 'home:start_mining_tweets' 2000000000000000%}".replace("2000000000000000", ticker_id.toLowerCase())
                 let response = await fetch(miningPath);
+
                 if (response.ok) {
                     let data = await response.json();
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+
+
+
                     this.list_mined_stock.push(data.ticker_id);
                     console.log(data);
                 } else {
+                    $(buttonName).html('MINE');
                     alert("Failed to mine tweet for ticker");
                 }
 
