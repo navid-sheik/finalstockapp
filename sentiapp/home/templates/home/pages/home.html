@@ -68,7 +68,7 @@
                         <a :href="`/stock/${stock.symbol}`" v-if="checkIfInclude(stock.symbol)">
 
 
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary"  :id="`view-btn-${stock.symbol}`">
                                 VIEW </button>
                         </a>
 
