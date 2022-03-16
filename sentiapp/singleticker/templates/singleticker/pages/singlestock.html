@@ -1,4 +1,6 @@
-{% extends "singleticker/base.html" %} {% block content %}
+{% extends "singleticker/base.html" %} 
+{% block title %}Stock's Details{% endblock %}
+{% block content %}
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -76,7 +78,7 @@
                         <div style="display: flex;flex-direction: row;background-color: none;">
                             <div style="margin-right: 10px;">
 
-                                %[[percentageChange]]  |
+                                [[percentageChange]]%  |
                             </div>
 
                             <div style="margin-right: 10px;">
@@ -153,7 +155,7 @@
 
                     <div class="flexItem" style="display: flex; flex-direction: column;">
                         <div>
-                            %[[yearlyChange ]]
+                            [[yearlyChange ]]%
 
                         </div>
                         <div>
