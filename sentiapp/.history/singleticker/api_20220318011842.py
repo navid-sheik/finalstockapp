@@ -370,7 +370,7 @@ def getSentimentTimeRange(request, ticker_id, time_range):
     })
 
 
-def should_buy_based_on_range(request, ticker_id, time_range):
+def shouldBuy(request, ticker_id, time_range):
     stock_ticker =  ticker_id.lower()
     stock = get_object_or_404(StockSummary, ticker=stock_ticker)
     date_from = datetime.datetime.now() - datetime.timedelta(days=time_range)

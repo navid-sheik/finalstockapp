@@ -2,12 +2,10 @@ import imp
 from django.contrib import admin
 from django.urls import path, include
 from singleticker import views
-from home.views import home_page
 from singleticker.api import fetchStockData, fetchStockDataHistory,getHotTweet,getSentiment24Hours,getSentimentTimeRange, getSearchTwitter,getPopularTweets,getRecentTweets, get_tweets_based_sentiment,get_single_tweet_sentiment,fetchCompanyInfo, should_buy_based_on_range
 app_name =  'singleticker'
 
 urlpatterns = [
-     path('', home_page, name="home"),
      path ('stock/<str:ticker_id>',views.singleStockView, name =  "single-stock" ),
      path('api/get_quote/<str:ticker_id>', fetchStockData, name="get_current_quote"),
      path('api/get_company_info/<str:ticker_id>', fetchCompanyInfo, name="get_company_into"),

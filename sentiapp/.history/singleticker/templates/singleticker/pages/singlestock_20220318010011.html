@@ -197,18 +197,13 @@
     <div style="display: flex; flex-direction: row; margin-bottom: 10px;">
         <div style="padding: 5px;flex: 1">
 
-            <button style="width: 100%;"  :style="[longTermBuy ? {'background': '#18a558'} : {'background': '#ff0000'}]" > LONG TERM 
-                <i class="fa-solid fa-check" v-if="longTermBuy"></i>
-                <i class="fa-solid fa-remove" v-else></i>
+            <button style="width: 100%;"  :style="[longTermBuy ? {'background': '#18a558'} : {'background': '#ff0000'}]" > LONG TERM
             </button> 
         </div>
 
         <div style="padding: 5px;flex: 1">
-            <button style="width: 100%;" :style="[shortTermBuy ? {'background': '#18a558'} : {'background': '#ff0000'}]" > SHORT TERM 
-                <i class="fa-solid fa-check" v-if="shortTermBuy"></i>
-                <i class="fa-solid fa-remove" v-else></i>
-            </button>
-           
+            <button class="btn btn-danger" @click.native="get_negative_tweets()" style="width: 100%;"> SHORT TERM </button>
+
         </div>
 
 
@@ -1816,8 +1811,7 @@
 
             this.searchKywordFetching(pathArray[2].toLowerCase())
 
-            this.shouldBuyBasedOnRange(7)
-            this.shouldBuyBasedOnRange(30)
+
         },
         methods: {
             async getCompanyInfo() {
@@ -2330,32 +2324,7 @@
             },
             closeModal (){
                 $("#exampleModal").modal("hide");
-            },
-
-            async shouldBuyBasedOnRange(time_range) {
-                var pathArray = window.location.pathname.split('/');
-
-                var urlShouldBuy= "{%url 'singleticker:should_buy_based_on_range' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase());
-                var urlShouldBuyWithDaterange = urlShouldBuy.replace('50000000000000', time_range)
-                let responseShouldBuy= await fetch(urlShouldBuyWithDaterange);
-                if (responseShouldBuy.ok) {
-                    let data = await responseShouldBuy.json();
-                    console.log("Sentiment data");
-                    console.log(data)
-                    if (time_range <= 7) {
-                        console.log("short term", data.shouldBuy)
-                        this.shortTermBuy = data.shouldBuy
-                    }else {
-                        console.log("long term", data.shouldBuy)
-                        this.longTermBuy = data.shouldBuy
-                    }
-                    
-
-
-
-
-                }
-            },
+            }
 
 
 
