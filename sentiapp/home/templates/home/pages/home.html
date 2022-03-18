@@ -191,12 +191,15 @@
         <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12" style="background-color: none;">
 
             <!-- Row 1 new-->
+
             <div class="row no-gutters" style="background-color: #383c48;margin-bottom: 25px;"
                 v-for="single in news.slice(0,1)">
 
-
+                
                 <div class="col-8" style="background-color: gray;">
-                    <img v-bind:src="single.image" style="height: 100%; width: 100%;object-fit :fill;" />
+            
+                        <img v-bind:src="single.image" style="height: 100%; width: 100%;object-fit :fill;" />
+                    
                 </div>
 
                 <div class="col" style="background-color: #383c48;">
@@ -217,13 +220,14 @@
                         </div>
 
                         <div style="display: flex; flex-direction: row; justify-content: flex-end;">
-                            <button class="btn btn-dark"> READ MORE </button>
+                            <a :href="single.url" target="_blank"> <button class="btn btn-dark"> READ MORE </button> </a>
 
 
                         </div>
 
                     </div>
                 </div>
+                
             </div>
 
             <!-- Row 2 new-->
@@ -231,6 +235,7 @@
 
 
                 <div class="col" style="padding: 10px;" v-for="single in news.slice(2,5)">
+                    <a :href="single.url" target="_blank">
                     <div class="card card-block" style="background-color: #383c48;">
 
                         <div>
@@ -244,6 +249,7 @@
 
                         </div>
                     </div>
+                    </a>
                 </div>
 
 
@@ -255,11 +261,14 @@
 
             <div class="row no-gutters" style="background-color: seagreen; margin-bottom: 20px;"
                 v-for="single in news.slice(5, -1)">
+
                 <div class=" col-4" style="background-color: indigo;">
-                    <img v-bind:src="single.image" style="width: 100%; height: 100%;object-fit: fill;" />
-
-                </div>
-
+                    <a :href="single.url" target="_blank">
+                        <img v-bind:src="single.image" style="width: 100%; height: 100%;object-fit: fill;" />
+                    </a>
+                 </div>
+                
+    
                 <div class="col" style="background-color: #383c48;">
                     <div
                         style="display:flex; flex-direction: column;align-items: center;justify-content: center;padding: 10px;">
@@ -276,28 +285,16 @@
 
 
                         </div>
-
+                        
+                      
 
 
                     </div>
                 </div>
+               
+              
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
-
-
-
 
 
 

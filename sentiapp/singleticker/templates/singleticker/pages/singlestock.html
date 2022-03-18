@@ -370,7 +370,7 @@
     <div class="row flex-nowrap" style="background-color: none;overflow-y: scroll;padding : 0px; ">
 
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12" v-for="tweet in tweet_list_popular_recent">
-
+            <a :href="`https://twitter.com/random/status/${tweet.id_str}`" target="_blank">
             <div class="card card-block"
                 style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
                 <!-- TICKER-->
@@ -442,6 +442,7 @@
 
                 </div>
             </div>
+            </a>
         </div>
     </div>
 
@@ -673,7 +674,7 @@
     <div class="row flex-nowrap" style="background-color: none;overflow-y: scroll;padding : 0px; ">
 
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12" v-for="tweet in tweet_list_basedOn_sentiment">
-
+            <a :href="`https://twitter.com/random/status/${tweet.id_str}`" target="_blank">
             <div class="card card-block"
                 style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
                 <!-- TICKER-->
@@ -745,6 +746,7 @@
 
                 </div>
             </div>
+            </a>
         </div>
     </div>
 
@@ -786,9 +788,9 @@
     <div class="row flex-wrap"
         style="background-color: none;padding : 0px; margin-top: 50px;max-height: 100%; height: auto; overflow-y: hidden; ">
 
-        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 " v-for="tweet in tweet_list_searched"
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 " v-for="tweet in tweet_list_searched"
             style="margin-top: 10px;">
-
+            <a :href="`https://twitter.com/random/status/${tweet.id_str}`" target="_blank">
             <div class="card card-block"
                 style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
                 <!-- TICKER-->
@@ -860,8 +862,11 @@
 
                 </div> -->
             </div>
+            </a>
         </div>
     </div>
+
+   
 
 
 
@@ -874,11 +879,113 @@
     {% autoescape off %}
     {{ tweets }}
     {% endautoescape %} -->
+   <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button> -->
+  
+  <!-- Modal -->
 
+  
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document"> 
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #383c48;color: white;">
+          <h5 class="modal-title" id="exampleModalLabel">Most Influential Tweet</h5>
+          <button type="button" class="close" @click.native="closeModal()" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" style="color: white;">&times;</span>
+          </button>
+        </div>
+        <a v-if="tweetInfluential" :href="`https://twitter.com/random/status/${tweetInfluential.id_str}`" target="_blank">
+        <div class="modal-body" style="background-color: #383c48;">
+            <div class="card card-block"
+            style="padding: 10px;display: flex; flex-direction: column;background-color: #383c48; color: white; ">
+            <!-- TICKER-->
+            <div id="tweet-top-container" style="background-color: none; display: flex;flex-direction: row;">
+
+                <div style="background-color: none;" v-if="tweetInfluential">
+                    <img v-bind:src="`${tweetInfluential.user.profile_image_url}`" style="width: 60px;" class="rounded">
+                </div>
+
+                <div style="background-color: none; padding: 0 1rem;" v-if="tweetInfluential">
+                    <div>
+                        <span style="background-color: none;"> <b>[[tweetInfluential.user.name]]</b></span>
+                    </div>
+                    <!-- STOCK NAME-->
+                    <div style=" text-overflow: ellipsis; overflow: hidden; color: whitesmoke;">
+                        <span>@[[tweetInfluential.user.screen_name]]</span>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div v-if="tweetInfluential"
+                style="display: inline-block; margin-top: 10px; height: 100px; overflow: hidden; text-overflow: ellipsis;">
+
+
+                <p>[[tweetInfluential.text]]</p>
+            </div>
+
+            <div style="display: flex; flex-direction: row; column-gap: 5; justify-content: stretch;" v-if="tweetInfluential">
+
+
+                <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                    <div style="background-color: none; margin-right: 5px;">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div style="background-color: none;">
+                        [[tweetInfluential.favorite_count]]
+
+                    </div>
+
+                </div>
+
+                <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                    <div style="background-color: none; margin-right: 5px;">
+                        <i class="fa fa-retweet"></i>
+                    </div>
+                    <div style="background-color: none;">
+                        [[tweetInfluential.retweet_count]]
+
+                    </div>
+
+                </div>
+
+
+
+                <div style="flex: 1;display: flex; flex-direction: row;background-color: none;">
+                    <div style="background-color: none; margin-right: 5px;">
+                        <i class="fa-solid fa-comment"></i>
+                    </div>
+                    <div style="background-color: none;">
+                        0
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+        </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- /.container -->
+  
+
+    
 </div>
+
+
 
 {% endblock %} {% block scripts %}
 <script>
+    
     // List of words
     // List of words
 
@@ -973,7 +1080,7 @@
                 data: null,
                 config: null,
                 myChart: null,
-                tweet: null,
+                tweetInfluential: null,
                 labelSentiment: [],
                 dataSentiment: [],
                 configSentiment: null,
@@ -1017,7 +1124,7 @@
 
 
 
-
+                modal_active : false,
 
 
 
@@ -1284,40 +1391,36 @@
                 document.getElementById('stockChart'),
                 this.config
             );
+       
+
             var pathArray = window.location.pathname.split('/');
+                var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
+                histogramPath = histogramPath.replace("50000000000000", "dynamic")
+                let responseHistogram = await fetch(histogramPath);
+                if (responseHistogram.ok) {
+                    let data = await responseHistogram.json();
 
-            var histogramPath = "{%url 'singleticker:get_time_history' 2000000000000000 50000000000000%}".replace("2000000000000000", pathArray[2].toLowerCase())
-            histogramPath = histogramPath.replace("50000000000000", "5d")
-            let responseHistogram = await fetch(histogramPath);
-            if (responseHistogram.ok) {
-                let data = await responseHistogram.json();
+                    //change data.map for dynamic
+                    var prices = data.stock_quote.data.map(x => x.open);
+                    console.log(prices)
+                    var dates = data.stock_quote.data.map(x => x.minute);
+                    console.log(dates);
 
-                //change data.map for dynamic
-                var prices = data.stock_quote.map(x => x.open);
-                console.log(prices)
-                var dates = data.stock_quote.map(x => x.label);
-                console.log(dates);
-                const dataarray = ['2021-11-03']
-                const item = [12]
-                // console.log(data.stock_quote)
+                    console.log(data.stock_quote)
 
 
-                // var mybarChart = document.getElementById('myChart');
+                    // var mybarChart = document.getElementById('myChart');
 
-                // console.log(mybarChart);
+                    // console.log(mybarChart);
+                    console.log(dates);
 
-                this.myChart.config.data.labels = dates;
-                this.myChart.data.datasets[0].data = prices;
-                this.myChart.update();
+                    this.myChart.data.labels = dates;
+                    this.myChart.data.datasets[0].data = prices;
+                    this.myChart.update();
+                } else {
+                    alert("failed to load the list of hobbies");
+                }
 
-
-                // this.myChart.data.labels = dataarray;
-                // this.myChart.data.datasets[0].data = item;
-
-                this.myChart.update();
-            } else {
-                alert("failed to load the list of hobbies");
-            }
 
 
 
@@ -1329,7 +1432,7 @@
                 let data = await responseTweet.json();
                 console.log("TWEET");
                 data = JSON.parse(data.tweet);
-                this.tweet = data;
+                this.tweetInfluential = data;
                 console.log(data)
 
 
@@ -1723,7 +1826,7 @@
                     //change data.map for dynamic
                     var prices = data.stock_quote.data.map(x => x.open);
                     console.log(prices)
-                    var dates = data.stock_quote.data.map(x => x.date);
+                    var dates = data.stock_quote.data.map(x => x.minute);
                     console.log(dates);
 
                     console.log(data.stock_quote)
@@ -2172,7 +2275,7 @@
             },
 
             async getSingleTweet(sentimentType, record_id) {
-
+               
                 //TWEET
                 var pathArray = window.location.pathname.split('/');
                 let baseUrl = "{%url 'singleticker:get_single_tweet_sentiment' 2000000000000000 50000000000000%}".replace("2000000000000000", sentimentType.toLowerCase());
@@ -2183,8 +2286,11 @@
                     let data = await responseTweet.json();
                     console.log("TWEET");
                     data = JSON.parse(data.single_tweet);
-                    this.tweet = data;
+                    this.tweetInfluential = data;
                     console.log(data)
+                    $("#exampleModal").modal("show");
+                    
+                  
 
 
 
@@ -2193,7 +2299,9 @@
                     alert("failed to load the list of hobbies");
                 }
             },
-
+            closeModal (){
+                $("#exampleModal").modal("hide");
+            }
 
 
 

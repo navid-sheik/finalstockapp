@@ -20,3 +20,15 @@
 .zc-ref {
   display: none;
 }
+
+
+
+
+
+.modal.show  {
+  display:flex!important;
+  flex-direction:column;
+  justify-content:center;
+  align-content:center;
+  align-items: flex-start;
+}
